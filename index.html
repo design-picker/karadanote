@@ -23,112 +23,58 @@
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'Zen Kaku Gothic New', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-  }
-
-  .phone-wrapper {
-    width: 100%;
-    max-width: 390px;
-    min-height: 100vh;
-    background: var(--bg);
-  }
-
-  .screen {
-    display: none;
-    min-height: 100vh;
-    flex-direction: column;
-    animation: fadeIn 0.3s ease;
-  }
+  body { font-family: 'Zen Kaku Gothic New', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; justify-content: center; }
+  .phone-wrapper { width: 100%; max-width: 390px; min-height: 100vh; background: var(--bg); }
+  .screen { display: none; min-height: 100vh; flex-direction: column; animation: fadeIn 0.3s ease; }
   .screen.active { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .app-header {
-    padding: 56px 28px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
+  .app-header { padding: 56px 28px 20px; display: flex; align-items: center; justify-content: space-between; }
   .app-logo { font-family: 'DM Serif Display', serif; font-size: 11px; letter-spacing: 0.18em; color: var(--text-muted); }
   .app-date { font-size: 12px; color: var(--text-muted); font-weight: 300; }
 
-  .onboarding {
-    background: var(--text);
-    color: var(--bg);
-    padding: 60px 36px 48px;
-    justify-content: space-between;
-  }
-
+  .onboarding { background: var(--text); color: var(--bg); padding: 60px 36px 48px; justify-content: space-between; }
   .onboarding-logo { font-family: 'DM Serif Display', serif; font-size: 13px; letter-spacing: 0.15em; color: var(--accent-light); margin-bottom: 60px; }
-
   .onboarding-main { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-
-  .onboarding-title { font-size: 32px; font-weight: 300; line-height: 1.4; margin-bottom: 32px; letter-spacing: -0.01em; }
+  .onboarding-title { font-size: 32px; font-weight: 300; line-height: 1.4; margin-bottom: 32px; }
   .onboarding-title strong { font-weight: 700; display: block; }
-
   .onboarding-note { font-size: 14px; line-height: 1.8; color: var(--accent-light); border-left: 2px solid var(--accent); padding-left: 16px; margin-bottom: 40px; }
 
-  .btn-primary { background: var(--bg); color: var(--text); border: none; border-radius: 50px; padding: 18px 32px; font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; width: 100%; transition: all 0.2s; margin-bottom: 12px; }
-  .btn-primary:active { transform: scale(0.98); opacity: 0.9; }
-
-  .btn-secondary { background: transparent; color: var(--bg); border: 2px solid rgba(255,255,255,0.3); border-radius: 50px; padding: 16px 32px; font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 14px; cursor: pointer; width: 100%; transition: all 0.2s; margin-bottom: 12px; }
-  .btn-secondary:active { transform: scale(0.98); opacity: 0.8; }
-
+  .btn-primary { background: var(--bg); color: var(--text); border: none; border-radius: 50px; padding: 18px 32px; font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; width: 100%; margin-bottom: 12px; }
+  .btn-secondary { background: transparent; color: var(--bg); border: 2px solid rgba(255,255,255,0.3); border-radius: 50px; padding: 16px 32px; font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 14px; cursor: pointer; width: 100%; margin-bottom: 12px; }
   .skip-note { text-align: center; font-size: 13px; color: var(--accent-light); padding: 8px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 
   .auth-screen { padding: 60px 36px 48px; display: flex; flex-direction: column; gap: 12px; }
   .auth-logo { font-family: 'DM Serif Display', serif; font-size: 11px; letter-spacing: 0.18em; color: var(--text-muted); margin-bottom: 20px; }
   .auth-title { font-size: 24px; font-weight: 300; margin-bottom: 4px; }
   .auth-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.6; }
-
-  .input-field { width: 100%; background: var(--surface); border: 2px solid var(--surface2); border-radius: var(--radius-sm); padding: 16px 20px; font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 15px; color: var(--text); outline: none; transition: border-color 0.2s; }
+  .input-field { width: 100%; background: var(--surface); border: 2px solid var(--surface2); border-radius: var(--radius-sm); padding: 16px 20px; font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 15px; color: var(--text); outline: none; }
   .input-field:focus { border-color: var(--accent); }
-
-  .btn-dark { background: var(--text); color: var(--bg); border: none; border-radius: 50px; padding: 18px 32px; font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; width: 100%; transition: all 0.2s; }
-  .btn-dark:active { transform: scale(0.98); opacity: 0.9; }
-
+  .btn-dark { background: var(--text); color: var(--bg); border: none; border-radius: 50px; padding: 18px 32px; font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; width: 100%; }
   .auth-switch { text-align: center; font-size: 13px; color: var(--text-muted); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
   .error-msg { font-size: 13px; color: var(--bad); text-align: center; min-height: 20px; }
 
   .question-content { flex: 1; padding: 16px 24px 40px; display: flex; flex-direction: column; }
   .question-step { font-size: 11px; color: var(--text-muted); letter-spacing: 0.12em; margin-bottom: 48px; }
-  .question-text { font-size: 28px; font-weight: 300; line-height: 1.4; letter-spacing: -0.01em; margin-bottom: 40px; white-space: pre-line; }
-
+  .question-text { font-size: 28px; font-weight: 300; line-height: 1.4; margin-bottom: 40px; white-space: pre-line; }
   .choice-group { display: flex; flex-direction: column; gap: 12px; }
-
-  .choice-btn { background: var(--surface); border: 2px solid transparent; border-radius: var(--radius-sm); padding: 20px 24px; font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 15px; font-weight: 400; color: var(--text); cursor: pointer; text-align: left; transition: all 0.2s; box-shadow: 0 1px 6px rgba(44,40,37,0.05); display: flex; align-items: center; justify-content: space-between; }
+  .choice-btn { background: var(--surface); border: 2px solid transparent; border-radius: var(--radius-sm); padding: 20px 24px; font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 15px; color: var(--text); cursor: pointer; text-align: left; box-shadow: 0 1px 6px rgba(44,40,37,0.05); display: flex; align-items: center; justify-content: space-between; }
   .choice-btn::after { content: '›'; font-size: 20px; color: var(--accent-light); }
-  .choice-btn:active { transform: scale(0.98); }
   .choice-btn.selected-good { background: rgba(107,158,126,0.1); border-color: var(--good); color: var(--good); }
   .choice-btn.selected-neutral { background: rgba(196,163,90,0.1); border-color: var(--neutral); color: var(--neutral); }
   .choice-btn.selected-bad { background: rgba(196,123,107,0.1); border-color: var(--bad); color: var(--bad); }
 
   .optional-note { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
   .symptom-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 32px; }
-  .symptom-tag { background: var(--surface); border: 2px solid transparent; border-radius: 50px; padding: 12px 20px; font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 14px; color: var(--text-muted); cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 6px rgba(44,40,37,0.05); }
+  .symptom-tag { background: var(--surface); border: 2px solid transparent; border-radius: 50px; padding: 12px 20px; font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 14px; color: var(--text-muted); cursor: pointer; box-shadow: 0 1px 6px rgba(44,40,37,0.05); }
   .symptom-tag.selected { background: rgba(123,107,93,0.1); border-color: var(--accent); color: var(--accent); }
-
-  .submit-btn { background: var(--text); color: var(--bg); border: none; border-radius: 50px; padding: 20px; font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; width: 100%; transition: all 0.2s; }
-  .submit-btn:active { transform: scale(0.98); opacity: 0.9; }
+  .submit-btn { background: var(--text); color: var(--bg); border: none; border-radius: 50px; padding: 20px; font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; width: 100%; }
 
   .success-screen { background: var(--good); color: white; padding: 60px 36px 48px; justify-content: center; align-items: center; text-align: center; gap: 20px; }
   .success-icon { font-size: 56px; line-height: 1; }
   .success-title { font-size: 26px; font-weight: 300; line-height: 1.5; }
   .success-sub { font-size: 14px; opacity: 0.85; line-height: 1.8; }
-
-  .btn-ghost { background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.4); border-radius: 50px; padding: 16px 32px; font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; margin-top: 8px; width: 100%; }
-  .btn-ghost:active { transform: scale(0.98); opacity: 0.9; }
+  .btn-ghost { background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.4); border-radius: 50px; padding: 16px 32px; font-family: 'Zen Kaku Gothic New', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; margin-top: 8px; width: 100%; }
 
   .analysis-card { background: var(--surface); border-radius: var(--radius); padding: 28px 24px; box-shadow: 0 2px 12px rgba(44,40,37,0.06); }
   .analysis-title { font-size: 14px; font-weight: 500; margin-bottom: 12px; }
@@ -146,7 +92,6 @@
   .dot-good { background: var(--good); }
   .dot-neutral { background: var(--neutral); }
   .dot-bad { background: var(--bad); }
-  .dot-empty { background: var(--accent-light); }
   .history-date { font-size: 12px; color: var(--text-muted); width: 48px; flex-shrink: 0; line-height: 1.5; }
   .history-status { font-size: 13px; font-weight: 500; flex: 1; }
   .history-tags { display: flex; gap: 4px; flex-wrap: wrap; }
@@ -159,7 +104,6 @@
   .nav-icon { font-size: 20px; line-height: 1; }
   .nav-label { font-size: 10px; color: var(--text-muted); letter-spacing: 0.05em; }
   .nav-item.active .nav-label { color: var(--accent); }
-
   .loading { text-align: center; color: var(--text-muted); padding: 24px; font-size: 13px; }
 </style>
 </head>
@@ -200,10 +144,7 @@
   </div>
 
   <div class="screen" id="screen-q1">
-    <div class="app-header">
-      <div class="app-logo">KARADA NOTE</div>
-      <div class="app-date" id="today-date"></div>
-    </div>
+    <div class="app-header"><div class="app-logo">KARADA NOTE</div><div class="app-date" id="today-date"></div></div>
     <div class="question-content">
       <div class="question-step" id="q1-step">1 / 2</div>
       <div class="question-text" id="q1-text"></div>
@@ -216,10 +157,7 @@
   </div>
 
   <div class="screen" id="screen-q1b">
-    <div class="app-header">
-      <div class="app-logo">KARADA NOTE</div>
-      <div class="app-date"></div>
-    </div>
+    <div class="app-header"><div class="app-logo">KARADA NOTE</div><div class="app-date"></div></div>
     <div class="question-content">
       <div class="question-step" id="q1b-step">1 / 2</div>
       <div class="question-text">どのあたりが気になりましたか？</div>
@@ -239,10 +177,7 @@
   </div>
 
   <div class="screen" id="screen-q2">
-    <div class="app-header">
-      <div class="app-logo">KARADA NOTE</div>
-      <div class="app-date"></div>
-    </div>
+    <div class="app-header"><div class="app-logo">KARADA NOTE</div><div class="app-date"></div></div>
     <div class="question-content">
       <div class="question-step">2 / 2</div>
       <div class="question-text">昨夜の眠りは、いかがでしたか？</div>
@@ -255,10 +190,7 @@
   </div>
 
   <div class="screen" id="screen-q2b">
-    <div class="app-header">
-      <div class="app-logo">KARADA NOTE</div>
-      <div class="app-date"></div>
-    </div>
+    <div class="app-header"><div class="app-logo">KARADA NOTE</div><div class="app-date"></div></div>
     <div class="question-content">
       <div class="question-step">2 / 2</div>
       <div class="question-text">どんな感じで眠れなかったですか？</div>
@@ -286,10 +218,7 @@
   </div>
 
   <div class="screen" id="screen-done">
-    <div class="app-header">
-      <div class="app-logo">KARADA NOTE</div>
-      <div class="app-date"></div>
-    </div>
+    <div class="app-header"><div class="app-logo">KARADA NOTE</div><div class="app-date"></div></div>
     <div class="question-content">
       <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:24px;">
         <div class="question-text" style="margin-bottom:0;">今日の記録、おつかれさまでした。</div>
@@ -310,13 +239,8 @@
   </div>
 
   <div class="screen" id="screen-history">
-    <div class="app-header">
-      <div class="app-logo">KARADA NOTE</div>
-      <div class="app-date"></div>
-    </div>
-    <div class="history-content" id="history-list">
-      <div class="loading">読み込み中...</div>
-    </div>
+    <div class="app-header"><div class="app-logo">KARADA NOTE</div><div class="app-date"></div></div>
+    <div class="history-content" id="history-list"><div class="loading">読み込み中...</div></div>
     <div class="bottom-nav">
       <div class="nav-item" id="btn-history-to-home"><div class="nav-icon">○</div><div class="nav-label">きろく</div></div>
       <div class="nav-item active"><div class="nav-icon">≡</div><div class="nav-label">あしあと</div></div>
@@ -325,11 +249,15 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
+// Supabaseはscript読み込み完了後に使う
+window.addEventListener('load', function() {
+
 const SUPABASE_URL = 'https://hmznnknltmrjevbrlqnr.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_9Q9DHOTpC1zY7RAW2yz7Uw_VsPpnkwR';
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-let db = null;
 let mode = 'review';
 let pendingMode = null;
 let currentCondition = null;
@@ -337,9 +265,14 @@ let currentSymptoms = [];
 let currentSleep = null;
 let currentUser = null;
 
-// Date
+// 日付
 const now = new Date();
 document.getElementById('today-date').textContent = (now.getMonth()+1) + '/' + now.getDate();
+
+// セッション確認
+db.auth.getSession().then(({ data: { session } }) => {
+  if (session) currentUser = session.user;
+});
 
 function goTo(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -352,53 +285,13 @@ function getTimeStr() {
   return d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0');
 }
 
-// Supabase読み込み後に初期化
-const script = document.createElement('script');
-script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';
-script.onload = async function() {
-  db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-  // セッション確認
-  const { data: { session } } = await db.auth.getSession();
-  if (session) {
-    currentUser = session.user;
-  }
-
-  // 認証状態の変化を監視
-  db.auth.onAuthStateChange((event, session) => {
-    if (session) {
-      currentUser = session.user;
-      // ログイン成功後、待機中のフローがあれば進める
-      if (pendingMode && (event === 'SIGNED_IN')) {
-        const m = pendingMode;
-        pendingMode = null;
-        startFlow(m);
-      }
-    } else {
-      currentUser = null;
-    }
-  });
-};
-document.head.appendChild(script);
-
-// オンボーディング
-document.getElementById('btn-review').addEventListener('click', () => startFlow('review'));
-document.getElementById('btn-now').addEventListener('click', () => startFlow('now'));
-document.getElementById('btn-skip').addEventListener('click', () => { loadHistory(); goTo('screen-history'); });
-
-function startFlow(m) {
+function beginFlow(m) {
   mode = m;
   currentCondition = null;
   currentSymptoms = [];
   currentSleep = null;
   document.querySelectorAll('.symptom-tag').forEach(t => t.classList.remove('selected'));
   document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected-good','selected-neutral','selected-bad'));
-
-  if (!currentUser) {
-    pendingMode = m;
-    goTo('screen-login');
-    return;
-  }
 
   if (mode === 'review') {
     document.getElementById('q1-step').textContent = '1 / 2';
@@ -410,26 +303,45 @@ function startFlow(m) {
   goTo('screen-q1');
 }
 
+// オンボーディングボタン
+document.getElementById('btn-review').addEventListener('click', () => {
+  if (!currentUser) { pendingMode = 'review'; goTo('screen-login'); return; }
+  beginFlow('review');
+});
+
+document.getElementById('btn-now').addEventListener('click', () => {
+  if (!currentUser) { pendingMode = 'now'; goTo('screen-login'); return; }
+  beginFlow('now');
+});
+
+document.getElementById('btn-skip').addEventListener('click', () => {
+  loadHistory();
+  goTo('screen-history');
+});
+
 // ログイン
 document.getElementById('btn-login').addEventListener('click', async () => {
   const email = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value;
   document.getElementById('login-error').textContent = '';
+
   if (!email || !password) {
     document.getElementById('login-error').textContent = 'メールアドレスとパスワードを入力してください。';
     return;
   }
+
   const { data, error } = await db.auth.signInWithPassword({ email, password });
-  if (error) {
+  if (error || !data.user) {
     document.getElementById('login-error').textContent = 'メールアドレスまたはパスワードが違います。';
     return;
   }
+
   currentUser = data.user;
-  // pendingModeがあれば進める、なければホームへ
+
   if (pendingMode) {
     const m = pendingMode;
     pendingMode = null;
-    startFlow(m);
+    beginFlow(m);
   } else {
     goTo('screen-onboarding');
   }
@@ -438,26 +350,28 @@ document.getElementById('btn-login').addEventListener('click', async () => {
 document.getElementById('btn-to-signup').addEventListener('click', () => goTo('screen-signup'));
 document.getElementById('btn-to-login').addEventListener('click', () => goTo('screen-login'));
 
+// サインアップ
 document.getElementById('btn-signup').addEventListener('click', async () => {
   const email = document.getElementById('signup-email').value.trim();
   const password = document.getElementById('signup-password').value;
   document.getElementById('signup-error').textContent = '';
+
   if (!email || !password) { document.getElementById('signup-error').textContent = 'メールアドレスとパスワードを入力してください。'; return; }
   if (password.length < 6) { document.getElementById('signup-error').textContent = 'パスワードは6文字以上にしてください。'; return; }
+
   const { data, error } = await db.auth.signUp({ email, password });
-  if (error) { document.getElementById('signup-error').textContent = '登録できませんでした。もう一度お試しください。'; return; }
-  if (data.session) {
-    currentUser = data.session.user;
+  if (error) { document.getElementById('signup-error').textContent = '登録できませんでした: ' + error.message; return; }
+
+  if (data.user) {
+    currentUser = data.user;
     await db.from('profiles').upsert({ id: currentUser.id });
     if (pendingMode) {
       const m = pendingMode;
       pendingMode = null;
-      startFlow(m);
+      beginFlow(m);
     } else {
       goTo('screen-onboarding');
     }
-  } else {
-    goTo('screen-login');
   }
 });
 
@@ -479,7 +393,7 @@ document.querySelectorAll('#screen-q1 .choice-btn').forEach(btn => {
   });
 });
 
-// 症状
+// 症状タグ
 document.querySelectorAll('.symptom-tag').forEach(tag => {
   tag.addEventListener('click', () => {
     tag.classList.toggle('selected');
@@ -521,7 +435,7 @@ document.querySelectorAll('#screen-q2b .choice-btn').forEach(btn => {
 // 保存
 async function saveRecord(sleepDetail = null) {
   if (!currentUser) { goTo('screen-login'); return; }
-  await db.from('records').insert({
+  const { error } = await db.from('records').insert({
     user_id: currentUser.id,
     record_type: mode,
     condition: currentCondition,
@@ -530,6 +444,7 @@ async function saveRecord(sleepDetail = null) {
     sleep_detail: sleepDetail,
     recorded_at: new Date().toISOString()
   });
+  if (error) console.error('保存エラー:', error);
   if (mode === 'review') {
     await updateDaysCount();
     goTo('screen-success');
@@ -551,7 +466,6 @@ async function updateDaysCount() {
   }
 }
 
-// ボタン
 document.getElementById('btn-to-history').addEventListener('click', () => { loadHistory(); goTo('screen-history'); });
 document.getElementById('btn-to-done').addEventListener('click', () => goTo('screen-done'));
 document.getElementById('btn-now-to-history').addEventListener('click', () => { loadHistory(); goTo('screen-history'); });
@@ -586,6 +500,8 @@ async function loadHistory() {
   });
   list.innerHTML = html;
 }
+
+}); // window load end
 </script>
 </body>
 </html>
