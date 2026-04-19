@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>からだノート</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;500;700&family=DM+Serif+Display&display=swap');
 
@@ -110,15 +111,15 @@
 <body>
 <div class="phone-wrapper">
 
-  <div class="screen onboarding active" id="screen-onboarding">
+  <div class="screen onboarding" id="screen-onboarding">
     <div class="onboarding-logo">KARADA NOTE</div>
     <div class="onboarding-main">
       <div class="onboarding-title">自分の体感を、<br><strong>自分の記録に。</strong></div>
       <div class="onboarding-note">しんどい日は無理しなくて大丈夫です。<br>完璧でなくていい。<br>自分のペースで続けましょう。</div>
     </div>
-    <button class="btn-primary" id="btn-review">今日1日を振り返る</button>
-    <button class="btn-secondary" id="btn-now">今、気になることを記録する</button>
-    <div class="skip-note" id="btn-skip">今日は体調が悪いのでスキップ</div>
+    <button class="btn-primary" onclick="onClickReview()">今日1日を振り返る</button>
+    <button class="btn-secondary" onclick="onClickNow()">今、気になることを記録する</button>
+    <div class="skip-note" onclick="onClickSkip()">今日は体調が悪いのでスキップ</div>
   </div>
 
   <div class="screen auth-screen" id="screen-login">
@@ -128,8 +129,8 @@
     <input class="input-field" type="email" id="login-email" placeholder="メールアドレス" autocomplete="email">
     <input class="input-field" type="password" id="login-password" placeholder="パスワード" autocomplete="current-password">
     <div class="error-msg" id="login-error"></div>
-    <button class="btn-dark" id="btn-login">ログイン</button>
-    <div class="auth-switch" id="btn-to-signup">アカウントをお持ちでない方はこちら</div>
+    <button class="btn-dark" onclick="onClickLogin()">ログイン</button>
+    <div class="auth-switch" onclick="goTo('screen-signup')">アカウントをお持ちでない方はこちら</div>
   </div>
 
   <div class="screen auth-screen" id="screen-signup">
@@ -139,8 +140,8 @@
     <input class="input-field" type="email" id="signup-email" placeholder="メールアドレス" autocomplete="email">
     <input class="input-field" type="password" id="signup-password" placeholder="パスワード（6文字以上）" autocomplete="new-password">
     <div class="error-msg" id="signup-error"></div>
-    <button class="btn-dark" id="btn-signup">登録する</button>
-    <div class="auth-switch" id="btn-to-login">すでにアカウントをお持ちの方</div>
+    <button class="btn-dark" onclick="onClickSignup()">登録する</button>
+    <div class="auth-switch" onclick="goTo('screen-login')">すでにアカウントをお持ちの方</div>
   </div>
 
   <div class="screen" id="screen-q1">
@@ -149,9 +150,9 @@
       <div class="question-step" id="q1-step">1 / 2</div>
       <div class="question-text" id="q1-text"></div>
       <div class="choice-group">
-        <button class="choice-btn" data-val="good">元気だった</button>
-        <button class="choice-btn" data-val="neutral">普通だった</button>
-        <button class="choice-btn" data-val="bad">かなりしんどかった</button>
+        <button class="choice-btn" onclick="onSelectCondition('good', this)">元気だった</button>
+        <button class="choice-btn" onclick="onSelectCondition('neutral', this)">普通だった</button>
+        <button class="choice-btn" onclick="onSelectCondition('bad', this)">かなりしんどかった</button>
       </div>
     </div>
   </div>
@@ -162,17 +163,17 @@
       <div class="question-step" id="q1b-step">1 / 2</div>
       <div class="question-text">どのあたりが気になりましたか？</div>
       <div class="optional-note">任意です。スキップしても大丈夫です。</div>
-      <div class="symptom-group">
-        <button class="symptom-tag" data-tag="頭">頭</button>
-        <button class="symptom-tag" data-tag="肩・首">肩・首</button>
-        <button class="symptom-tag" data-tag="めまい">めまい</button>
-        <button class="symptom-tag" data-tag="だるさ">だるさ</button>
-        <button class="symptom-tag" data-tag="気持ち">気持ち</button>
-        <button class="symptom-tag" data-tag="その他">その他</button>
+      <div class="symptom-group" id="symptom-group">
+        <button class="symptom-tag" onclick="toggleTag(this, '頭')">頭</button>
+        <button class="symptom-tag" onclick="toggleTag(this, '肩・首')">肩・首</button>
+        <button class="symptom-tag" onclick="toggleTag(this, 'めまい')">めまい</button>
+        <button class="symptom-tag" onclick="toggleTag(this, 'だるさ')">だるさ</button>
+        <button class="symptom-tag" onclick="toggleTag(this, '気持ち')">気持ち</button>
+        <button class="symptom-tag" onclick="toggleTag(this, 'その他')">その他</button>
       </div>
       <div style="flex:1;"></div>
-      <button class="submit-btn" id="btn-symptom-next">次へ</button>
-      <div class="skip-note" style="color:var(--text-muted); margin-top:12px;" id="btn-symptom-skip">スキップして次へ</div>
+      <button class="submit-btn" onclick="afterSymptom()">次へ</button>
+      <div class="skip-note" style="color:var(--text-muted); margin-top:12px;" onclick="afterSymptom()">スキップして次へ</div>
     </div>
   </div>
 
@@ -182,9 +183,9 @@
       <div class="question-step">2 / 2</div>
       <div class="question-text">昨夜の眠りは、いかがでしたか？</div>
       <div class="choice-group">
-        <button class="choice-btn" data-val="good">よく眠れた</button>
-        <button class="choice-btn" data-val="neutral">普通だった</button>
-        <button class="choice-btn" data-val="bad">あまり眠れなかった</button>
+        <button class="choice-btn" onclick="onSelectSleep('good', this)">よく眠れた</button>
+        <button class="choice-btn" onclick="onSelectSleep('neutral', this)">普通だった</button>
+        <button class="choice-btn" onclick="onSelectSleep('bad', this)">あまり眠れなかった</button>
       </div>
     </div>
   </div>
@@ -195,8 +196,8 @@
       <div class="question-step">2 / 2</div>
       <div class="question-text">どんな感じで眠れなかったですか？</div>
       <div class="choice-group">
-        <button class="choice-btn" data-val="short">時間が短かった</button>
-        <button class="choice-btn" data-val="quality">寝た気がしなかった</button>
+        <button class="choice-btn" onclick="onSelectSleepDetail('short', this)">時間が短かった</button>
+        <button class="choice-btn" onclick="onSelectSleepDetail('quality', this)">寝た気がしなかった</button>
       </div>
     </div>
   </div>
@@ -205,16 +206,16 @@
     <div class="success-icon">✓</div>
     <div class="success-title">記録できました。<br>ありがとうございます。</div>
     <div class="success-sub">データが少しずつ積み重なっていきます。</div>
-    <button class="btn-ghost" id="btn-to-history">あしあとを見る</button>
-    <button class="btn-ghost" id="btn-to-done">ホームへ</button>
+    <button class="btn-ghost" onclick="showHistory()">あしあとを見る</button>
+    <button class="btn-ghost" onclick="goTo('screen-done')">ホームへ</button>
   </div>
 
   <div class="screen success-screen" id="screen-success-now" style="background: var(--accent);">
     <div class="success-icon">✓</div>
     <div class="success-title">記録しました。</div>
     <div class="success-sub" id="success-now-time"></div>
-    <button class="btn-ghost" id="btn-now-to-history">あしあとを見る</button>
-    <button class="btn-ghost" id="btn-now-to-home">ホームへ</button>
+    <button class="btn-ghost" onclick="showHistory()">あしあとを見る</button>
+    <button class="btn-ghost" onclick="goTo('screen-onboarding')">ホームへ</button>
   </div>
 
   <div class="screen" id="screen-done">
@@ -234,7 +235,7 @@
     </div>
     <div class="bottom-nav">
       <div class="nav-item active"><div class="nav-icon">○</div><div class="nav-label">きろく</div></div>
-      <div class="nav-item" id="btn-done-to-history"><div class="nav-icon">≡</div><div class="nav-label">あしあと</div></div>
+      <div class="nav-item" onclick="showHistory()"><div class="nav-icon">≡</div><div class="nav-label">あしあと</div></div>
     </div>
   </div>
 
@@ -242,58 +243,64 @@
     <div class="app-header"><div class="app-logo">KARADA NOTE</div><div class="app-date"></div></div>
     <div class="history-content" id="history-list"><div class="loading">読み込み中...</div></div>
     <div class="bottom-nav">
-      <div class="nav-item" id="btn-history-to-home"><div class="nav-icon">○</div><div class="nav-label">きろく</div></div>
+      <div class="nav-item" onclick="goTo('screen-onboarding')"><div class="nav-icon">○</div><div class="nav-label">きろく</div></div>
       <div class="nav-item active"><div class="nav-icon">≡</div><div class="nav-label">あしあと</div></div>
     </div>
   </div>
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
-// Supabaseはscript読み込み完了後に使う
-window.addEventListener('load', function() {
+// グローバル変数
+var db = null;
+var currentUser = null;
+var currentMode = 'review';
+var currentCondition = null;
+var currentSymptoms = [];
+var currentSleep = null;
 
-const SUPABASE_URL = 'https://hmznnknltmrjevbrlqnr.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_9Q9DHOTpC1zY7RAW2yz7Uw_VsPpnkwR';
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-let mode = 'review';
-let pendingMode = null;
-let currentCondition = null;
-let currentSymptoms = [];
-let currentSleep = null;
-let currentUser = null;
+// Supabase初期化
+var SUPABASE_URL = 'https://hmznnknltmrjevbrlqnr.supabase.co';
+var SUPABASE_KEY = 'sb_publishable_9Q9DHOTpC1zY7RAW2yz7Uw_VsPpnkwR';
+db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // 日付
-const now = new Date();
+var now = new Date();
 document.getElementById('today-date').textContent = (now.getMonth()+1) + '/' + now.getDate();
 
-// セッション確認
-db.auth.getSession().then(({ data: { session } }) => {
-  if (session) currentUser = session.user;
+// 起動時セッション確認
+db.auth.getSession().then(function(result) {
+  var session = result.data.session;
+  if (session && session.user) {
+    currentUser = session.user;
+    console.log('セッション復元:', currentUser.email);
+  }
+  goTo('screen-onboarding');
 });
 
 function goTo(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
   document.getElementById(id).classList.add('active');
   window.scrollTo(0, 0);
 }
 
 function getTimeStr() {
-  const d = new Date();
+  var d = new Date();
   return d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0');
 }
 
-function beginFlow(m) {
-  mode = m;
+function resetFlow() {
   currentCondition = null;
   currentSymptoms = [];
   currentSleep = null;
-  document.querySelectorAll('.symptom-tag').forEach(t => t.classList.remove('selected'));
-  document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected-good','selected-neutral','selected-bad'));
+  document.querySelectorAll('.symptom-tag').forEach(function(t) { t.classList.remove('selected'); });
+  document.querySelectorAll('.choice-btn').forEach(function(b) { b.classList.remove('selected-good','selected-neutral','selected-bad'); });
+}
 
-  if (mode === 'review') {
+function startFlow(m) {
+  resetFlow();
+  currentMode = m;
+  if (currentMode === 'review') {
     document.getElementById('q1-step').textContent = '1 / 2';
     document.getElementById('q1-text').textContent = '今日1日の体調は、\nいかがでしたか？';
   } else {
@@ -303,26 +310,31 @@ function beginFlow(m) {
   goTo('screen-q1');
 }
 
-// オンボーディングボタン
-document.getElementById('btn-review').addEventListener('click', () => {
-  if (!currentUser) { pendingMode = 'review'; goTo('screen-login'); return; }
-  beginFlow('review');
-});
+function onClickReview() {
+  if (!currentUser) {
+    sessionStorage.setItem('pendingMode', 'review');
+    goTo('screen-login');
+    return;
+  }
+  startFlow('review');
+}
 
-document.getElementById('btn-now').addEventListener('click', () => {
-  if (!currentUser) { pendingMode = 'now'; goTo('screen-login'); return; }
-  beginFlow('now');
-});
+function onClickNow() {
+  if (!currentUser) {
+    sessionStorage.setItem('pendingMode', 'now');
+    goTo('screen-login');
+    return;
+  }
+  startFlow('now');
+}
 
-document.getElementById('btn-skip').addEventListener('click', () => {
-  loadHistory();
-  goTo('screen-history');
-});
+function onClickSkip() {
+  showHistory();
+}
 
-// ログイン
-document.getElementById('btn-login').addEventListener('click', async () => {
-  const email = document.getElementById('login-email').value.trim();
-  const password = document.getElementById('login-password').value;
+function onClickLogin() {
+  var email = document.getElementById('login-email').value.trim();
+  var password = document.getElementById('login-password').value;
   document.getElementById('login-error').textContent = '';
 
   if (!email || !password) {
@@ -330,178 +342,153 @@ document.getElementById('btn-login').addEventListener('click', async () => {
     return;
   }
 
-  const { data, error } = await db.auth.signInWithPassword({ email, password });
-  if (error || !data.user) {
-    document.getElementById('login-error').textContent = 'メールアドレスまたはパスワードが違います。';
-    return;
-  }
+  db.auth.signInWithPassword({ email: email, password: password }).then(function(result) {
+    if (result.error || !result.data.user) {
+      document.getElementById('login-error').textContent = 'メールアドレスまたはパスワードが違います。';
+      return;
+    }
+    currentUser = result.data.user;
+    console.log('ログイン成功:', currentUser.email);
 
-  currentUser = data.user;
+    var pending = sessionStorage.getItem('pendingMode');
+    sessionStorage.removeItem('pendingMode');
+    if (pending) {
+      startFlow(pending);
+    } else {
+      goTo('screen-onboarding');
+    }
+  });
+}
 
-  if (pendingMode) {
-    const m = pendingMode;
-    pendingMode = null;
-    beginFlow(m);
-  } else {
-    goTo('screen-onboarding');
-  }
-});
-
-document.getElementById('btn-to-signup').addEventListener('click', () => goTo('screen-signup'));
-document.getElementById('btn-to-login').addEventListener('click', () => goTo('screen-login'));
-
-// サインアップ
-document.getElementById('btn-signup').addEventListener('click', async () => {
-  const email = document.getElementById('signup-email').value.trim();
-  const password = document.getElementById('signup-password').value;
+function onClickSignup() {
+  var email = document.getElementById('signup-email').value.trim();
+  var password = document.getElementById('signup-password').value;
   document.getElementById('signup-error').textContent = '';
 
   if (!email || !password) { document.getElementById('signup-error').textContent = 'メールアドレスとパスワードを入力してください。'; return; }
   if (password.length < 6) { document.getElementById('signup-error').textContent = 'パスワードは6文字以上にしてください。'; return; }
 
-  const { data, error } = await db.auth.signUp({ email, password });
-  if (error) { document.getElementById('signup-error').textContent = '登録できませんでした: ' + error.message; return; }
-
-  if (data.user) {
-    currentUser = data.user;
-    await db.from('profiles').upsert({ id: currentUser.id });
-    if (pendingMode) {
-      const m = pendingMode;
-      pendingMode = null;
-      beginFlow(m);
-    } else {
-      goTo('screen-onboarding');
-    }
-  }
-});
-
-// Q1
-document.querySelectorAll('#screen-q1 .choice-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    currentCondition = btn.dataset.val;
-    document.querySelectorAll('#screen-q1 .choice-btn').forEach(b => b.classList.remove('selected-good','selected-neutral','selected-bad'));
-    btn.classList.add('selected-' + currentCondition);
-    setTimeout(() => {
-      if (currentCondition === 'neutral' || currentCondition === 'bad') {
-        document.getElementById('q1b-step').textContent = mode === 'review' ? '1 / 2' : '記録';
-        goTo('screen-q1b');
+  db.auth.signUp({ email: email, password: password }).then(function(result) {
+    if (result.error) { document.getElementById('signup-error').textContent = '登録できませんでした: ' + result.error.message; return; }
+    if (result.data.user) {
+      currentUser = result.data.user;
+      db.from('profiles').upsert({ id: currentUser.id });
+      var pending = sessionStorage.getItem('pendingMode');
+      sessionStorage.removeItem('pendingMode');
+      if (pending) {
+        startFlow(pending);
       } else {
-        if (mode === 'review') goTo('screen-q2');
-        else saveRecord();
+        goTo('screen-onboarding');
       }
-    }, 250);
+    }
   });
-});
+}
 
-// 症状タグ
-document.querySelectorAll('.symptom-tag').forEach(tag => {
-  tag.addEventListener('click', () => {
-    tag.classList.toggle('selected');
-    const t = tag.dataset.tag;
-    if (tag.classList.contains('selected')) currentSymptoms.push(t);
-    else currentSymptoms = currentSymptoms.filter(s => s !== t);
-  });
-});
+function onSelectCondition(val, btn) {
+  currentCondition = val;
+  document.querySelectorAll('#screen-q1 .choice-btn').forEach(function(b) { b.classList.remove('selected-good','selected-neutral','selected-bad'); });
+  btn.classList.add('selected-' + val);
+  setTimeout(function() {
+    if (val === 'neutral' || val === 'bad') {
+      document.getElementById('q1b-step').textContent = currentMode === 'review' ? '1 / 2' : '記録';
+      goTo('screen-q1b');
+    } else {
+      if (currentMode === 'review') goTo('screen-q2');
+      else saveRecord();
+    }
+  }, 250);
+}
 
-document.getElementById('btn-symptom-next').addEventListener('click', afterSymptom);
-document.getElementById('btn-symptom-skip').addEventListener('click', afterSymptom);
+function toggleTag(btn, tag) {
+  btn.classList.toggle('selected');
+  if (btn.classList.contains('selected')) {
+    currentSymptoms.push(tag);
+  } else {
+    currentSymptoms = currentSymptoms.filter(function(s) { return s !== tag; });
+  }
+}
 
 function afterSymptom() {
-  if (mode === 'review') goTo('screen-q2');
+  if (currentMode === 'review') goTo('screen-q2');
   else saveRecord();
 }
 
-// Q2
-document.querySelectorAll('#screen-q2 .choice-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    currentSleep = btn.dataset.val;
-    document.querySelectorAll('#screen-q2 .choice-btn').forEach(b => b.classList.remove('selected-good','selected-neutral','selected-bad'));
-    btn.classList.add('selected-' + currentSleep);
-    setTimeout(() => {
-      if (currentSleep === 'bad') goTo('screen-q2b');
-      else saveRecord();
-    }, 250);
-  });
-});
+function onSelectSleep(val, btn) {
+  currentSleep = val;
+  document.querySelectorAll('#screen-q2 .choice-btn').forEach(function(b) { b.classList.remove('selected-good','selected-neutral','selected-bad'); });
+  btn.classList.add('selected-' + val);
+  setTimeout(function() {
+    if (val === 'bad') goTo('screen-q2b');
+    else saveRecord();
+  }, 250);
+}
 
-// Q2b
-document.querySelectorAll('#screen-q2b .choice-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    btn.classList.add('selected-neutral');
-    setTimeout(() => saveRecord(btn.dataset.val), 250);
-  });
-});
+function onSelectSleepDetail(val, btn) {
+  btn.classList.add('selected-neutral');
+  setTimeout(function() { saveRecord(val); }, 250);
+}
 
-// 保存
-async function saveRecord(sleepDetail = null) {
+function saveRecord(sleepDetail) {
   if (!currentUser) { goTo('screen-login'); return; }
-  const { error } = await db.from('records').insert({
+  var payload = {
     user_id: currentUser.id,
-    record_type: mode,
+    record_type: currentMode,
     condition: currentCondition,
     symptoms: currentSymptoms.length > 0 ? currentSymptoms : null,
     sleep: currentSleep,
-    sleep_detail: sleepDetail,
+    sleep_detail: sleepDetail || null,
     recorded_at: new Date().toISOString()
+  };
+  db.from('records').insert(payload).then(function(result) {
+    if (result.error) console.error('保存エラー:', result.error);
+    if (currentMode === 'review') {
+      updateDaysCount();
+      goTo('screen-success');
+    } else {
+      document.getElementById('success-now-time').textContent = getTimeStr() + ' に記録しました。';
+      goTo('screen-success-now');
+    }
   });
-  if (error) console.error('保存エラー:', error);
-  if (mode === 'review') {
-    await updateDaysCount();
-    goTo('screen-success');
-  } else {
-    document.getElementById('success-now-time').textContent = getTimeStr() + ' に記録しました。';
-    goTo('screen-success-now');
-  }
 }
 
-async function updateDaysCount() {
-  const { data } = await db.from('records').select('recorded_at').eq('user_id', currentUser.id).eq('record_type', 'review');
-  if (data) {
-    const unique = new Set(data.map(r => r.recorded_at.slice(0,10))).size;
-    const rem = Math.max(0, 30 - unique);
-    const pct = Math.min(100, (unique / 30) * 100);
-    document.getElementById('days-remaining').textContent = rem;
-    document.getElementById('days-fill-bar').style.width = pct + '%';
-    document.getElementById('days-text').textContent = unique + ' / 30日';
-  }
+function updateDaysCount() {
+  db.from('records').select('recorded_at').eq('user_id', currentUser.id).eq('record_type', 'review').then(function(result) {
+    if (result.data) {
+      var unique = new Set(result.data.map(function(r) { return r.recorded_at.slice(0,10); })).size;
+      var rem = Math.max(0, 30 - unique);
+      var pct = Math.min(100, (unique / 30) * 100);
+      document.getElementById('days-remaining').textContent = rem;
+      document.getElementById('days-fill-bar').style.width = pct + '%';
+      document.getElementById('days-text').textContent = unique + ' / 30日';
+    }
+  });
 }
 
-document.getElementById('btn-to-history').addEventListener('click', () => { loadHistory(); goTo('screen-history'); });
-document.getElementById('btn-to-done').addEventListener('click', () => goTo('screen-done'));
-document.getElementById('btn-now-to-history').addEventListener('click', () => { loadHistory(); goTo('screen-history'); });
-document.getElementById('btn-now-to-home').addEventListener('click', () => goTo('screen-onboarding'));
-document.getElementById('btn-done-to-history').addEventListener('click', () => { loadHistory(); goTo('screen-history'); });
-document.getElementById('btn-history-to-home').addEventListener('click', () => goTo('screen-onboarding'));
-
-async function loadHistory() {
-  const list = document.getElementById('history-list');
+function showHistory() {
+  goTo('screen-history');
+  var list = document.getElementById('history-list');
   list.innerHTML = '<div class="loading">読み込み中...</div>';
   if (!currentUser) { list.innerHTML = '<div class="empty-state">ログインすると記録が表示されます。</div>'; return; }
-  const { data } = await db.from('records').select('*').eq('user_id', currentUser.id).order('recorded_at', { ascending: false }).limit(30);
-  if (!data || data.length === 0) {
-    list.innerHTML = '<div class="section-title">あしあと</div><div class="empty-state">まだ記録がありません。<br>最初の記録をつけてみましょう。</div>';
-    return;
-  }
-  const cLabel = { good: '元気だった', neutral: '普通だった', bad: 'かなりしんどかった' };
-  const dotC = { good: 'dot-good', neutral: 'dot-neutral', bad: 'dot-bad' };
-  let html = '<div class="section-title">あしあと</div>';
-  data.forEach(r => {
-    const d = new Date(r.recorded_at);
-    const ds = (d.getMonth()+1) + '/' + d.getDate();
-    const ts = d.getHours() + ':' + String(d.getMinutes()).padStart(2,'0');
-    const tags = (r.symptoms || []).map(s => `<span class="history-tag">${s}</span>`).join('');
-    const typeTag = r.record_type === 'now' ? '<span class="history-tag">追加記録</span>' : '';
-    html += `<div class="history-item">
-      <div class="history-dot ${dotC[r.condition]||'dot-empty'}"></div>
-      <div class="history-date">${ds}<span class="history-time">${ts}</span></div>
-      <div class="history-status">${cLabel[r.condition]||''}</div>
-      <div class="history-tags">${typeTag}${tags}</div>
-    </div>`;
+  db.from('records').select('*').eq('user_id', currentUser.id).order('recorded_at', { ascending: false }).limit(30).then(function(result) {
+    var data = result.data;
+    if (!data || data.length === 0) {
+      list.innerHTML = '<div class="section-title">あしあと</div><div class="empty-state">まだ記録がありません。<br>最初の記録をつけてみましょう。</div>';
+      return;
+    }
+    var cLabel = { good: '元気だった', neutral: '普通だった', bad: 'かなりしんどかった' };
+    var dotC = { good: 'dot-good', neutral: 'dot-neutral', bad: 'dot-bad' };
+    var html = '<div class="section-title">あしあと</div>';
+    data.forEach(function(r) {
+      var d = new Date(r.recorded_at);
+      var ds = (d.getMonth()+1) + '/' + d.getDate();
+      var ts = d.getHours() + ':' + String(d.getMinutes()).padStart(2,'0');
+      var tags = (r.symptoms || []).map(function(s) { return '<span class="history-tag">' + s + '</span>'; }).join('');
+      var typeTag = r.record_type === 'now' ? '<span class="history-tag">追加記録</span>' : '';
+      html += '<div class="history-item"><div class="history-dot ' + (dotC[r.condition]||'dot-empty') + '"></div><div class="history-date">' + ds + '<span class="history-time">' + ts + '</span></div><div class="history-status">' + (cLabel[r.condition]||'') + '</div><div class="history-tags">' + typeTag + tags + '</div></div>';
+    });
+    list.innerHTML = html;
   });
-  list.innerHTML = html;
 }
-
-}); // window load end
 </script>
 </body>
 </html>
