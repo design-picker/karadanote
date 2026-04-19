@@ -111,7 +111,7 @@
 <body>
 <div class="phone-wrapper">
 
-  <div class="screen onboarding" id="screen-onboarding">
+  <div class="screen onboarding active" id="screen-onboarding">
     <div class="onboarding-logo">KARADA NOTE</div>
     <div class="onboarding-main">
       <div class="onboarding-title">自分の体感を、<br><strong>自分の記録に。</strong></div>
@@ -119,7 +119,7 @@
     </div>
     <button class="btn-primary" onclick="onClickReview()">今日1日を振り返る</button>
     <button class="btn-secondary" onclick="onClickNow()">今、気になることを記録する</button>
-    <div class="skip-note" onclick="onClickSkip()">今日は体調が悪いのでスキップ</div>
+    <div class="skip-note" onclick="showHistory()">今日は体調が悪いのでスキップ</div>
   </div>
 
   <div class="screen auth-screen" id="screen-login">
@@ -158,46 +158,46 @@
   </div>
 
   <div class="screen" id="screen-q1b">
-    <div class="app-header"><div class="app-logo">KARADA NOTE</div><div class="app-date"></div></div>
+    <div class="app-header"><div class="app-logo">KARADA NOTE</div></div>
     <div class="question-content">
       <div class="question-step" id="q1b-step">1 / 2</div>
       <div class="question-text">どのあたりが気になりましたか？</div>
       <div class="optional-note">任意です。スキップしても大丈夫です。</div>
-      <div class="symptom-group" id="symptom-group">
-        <button class="symptom-tag" onclick="toggleTag(this, '頭')">頭</button>
-        <button class="symptom-tag" onclick="toggleTag(this, '肩・首')">肩・首</button>
-        <button class="symptom-tag" onclick="toggleTag(this, 'めまい')">めまい</button>
-        <button class="symptom-tag" onclick="toggleTag(this, 'だるさ')">だるさ</button>
-        <button class="symptom-tag" onclick="toggleTag(this, '気持ち')">気持ち</button>
-        <button class="symptom-tag" onclick="toggleTag(this, 'その他')">その他</button>
+      <div class="symptom-group">
+        <button class="symptom-tag" onclick="toggleTag(this,'頭')">頭</button>
+        <button class="symptom-tag" onclick="toggleTag(this,'肩・首')">肩・首</button>
+        <button class="symptom-tag" onclick="toggleTag(this,'めまい')">めまい</button>
+        <button class="symptom-tag" onclick="toggleTag(this,'だるさ')">だるさ</button>
+        <button class="symptom-tag" onclick="toggleTag(this,'気持ち')">気持ち</button>
+        <button class="symptom-tag" onclick="toggleTag(this,'その他')">その他</button>
       </div>
       <div style="flex:1;"></div>
       <button class="submit-btn" onclick="afterSymptom()">次へ</button>
-      <div class="skip-note" style="color:var(--text-muted); margin-top:12px;" onclick="afterSymptom()">スキップして次へ</div>
+      <div class="skip-note" style="color:var(--text-muted);margin-top:12px;" onclick="afterSymptom()">スキップして次へ</div>
     </div>
   </div>
 
   <div class="screen" id="screen-q2">
-    <div class="app-header"><div class="app-logo">KARADA NOTE</div><div class="app-date"></div></div>
+    <div class="app-header"><div class="app-logo">KARADA NOTE</div></div>
     <div class="question-content">
       <div class="question-step">2 / 2</div>
       <div class="question-text">昨夜の眠りは、いかがでしたか？</div>
       <div class="choice-group">
-        <button class="choice-btn" onclick="onSelectSleep('good', this)">よく眠れた</button>
-        <button class="choice-btn" onclick="onSelectSleep('neutral', this)">普通だった</button>
-        <button class="choice-btn" onclick="onSelectSleep('bad', this)">あまり眠れなかった</button>
+        <button class="choice-btn" onclick="onSelectSleep('good',this)">よく眠れた</button>
+        <button class="choice-btn" onclick="onSelectSleep('neutral',this)">普通だった</button>
+        <button class="choice-btn" onclick="onSelectSleep('bad',this)">あまり眠れなかった</button>
       </div>
     </div>
   </div>
 
   <div class="screen" id="screen-q2b">
-    <div class="app-header"><div class="app-logo">KARADA NOTE</div><div class="app-date"></div></div>
+    <div class="app-header"><div class="app-logo">KARADA NOTE</div></div>
     <div class="question-content">
       <div class="question-step">2 / 2</div>
       <div class="question-text">どんな感じで眠れなかったですか？</div>
       <div class="choice-group">
-        <button class="choice-btn" onclick="onSelectSleepDetail('short', this)">時間が短かった</button>
-        <button class="choice-btn" onclick="onSelectSleepDetail('quality', this)">寝た気がしなかった</button>
+        <button class="choice-btn" onclick="onSelectSleepDetail('short',this)">時間が短かった</button>
+        <button class="choice-btn" onclick="onSelectSleepDetail('quality',this)">寝た気がしなかった</button>
       </div>
     </div>
   </div>
@@ -210,7 +210,7 @@
     <button class="btn-ghost" onclick="goTo('screen-done')">ホームへ</button>
   </div>
 
-  <div class="screen success-screen" id="screen-success-now" style="background: var(--accent);">
+  <div class="screen success-screen" id="screen-success-now" style="background:var(--accent);">
     <div class="success-icon">✓</div>
     <div class="success-title">記録しました。</div>
     <div class="success-sub" id="success-now-time"></div>
@@ -219,9 +219,9 @@
   </div>
 
   <div class="screen" id="screen-done">
-    <div class="app-header"><div class="app-logo">KARADA NOTE</div><div class="app-date"></div></div>
+    <div class="app-header"><div class="app-logo">KARADA NOTE</div></div>
     <div class="question-content">
-      <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:24px;">
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:24px;">
         <div class="question-text" style="margin-bottom:0;">今日の記録、おつかれさまでした。</div>
         <div class="analysis-card">
           <div class="analysis-title">あなたのパターン</div>
@@ -240,7 +240,7 @@
   </div>
 
   <div class="screen" id="screen-history">
-    <div class="app-header"><div class="app-logo">KARADA NOTE</div><div class="app-date"></div></div>
+    <div class="app-header"><div class="app-logo">KARADA NOTE</div></div>
     <div class="history-content" id="history-list"><div class="loading">読み込み中...</div></div>
     <div class="bottom-nav">
       <div class="nav-item" onclick="goTo('screen-onboarding')"><div class="nav-icon">○</div><div class="nav-label">きろく</div></div>
@@ -251,32 +251,17 @@
 </div>
 
 <script>
-// グローバル変数
-var db = null;
-var currentUser = null;
+var SUPABASE_URL = 'https://hmznnknltmrjevbrlqnr.supabase.co';
+var SUPABASE_KEY = 'sb_publishable_9Q9DHOTpC1zY7RAW2yz7Uw_VsPpnkwR';
+var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 var currentMode = 'review';
 var currentCondition = null;
 var currentSymptoms = [];
 var currentSleep = null;
 
-// Supabase初期化
-var SUPABASE_URL = 'https://hmznnknltmrjevbrlqnr.supabase.co';
-var SUPABASE_KEY = 'sb_publishable_9Q9DHOTpC1zY7RAW2yz7Uw_VsPpnkwR';
-db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-// 日付
 var now = new Date();
 document.getElementById('today-date').textContent = (now.getMonth()+1) + '/' + now.getDate();
-
-// 起動時セッション確認
-db.auth.getSession().then(function(result) {
-  var session = result.data.session;
-  if (session && session.user) {
-    currentUser = session.user;
-    console.log('セッション復元:', currentUser.email);
-  }
-  goTo('screen-onboarding');
-});
 
 function goTo(id) {
   document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
@@ -286,20 +271,25 @@ function goTo(id) {
 
 function getTimeStr() {
   var d = new Date();
-  return d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0');
+  return d.getHours() + ':' + String(d.getMinutes()).padStart(2,'0');
 }
 
-function resetFlow() {
+// ★ボタンクリック時に毎回セッションを確認する
+function getUser(callback) {
+  db.auth.getSession().then(function(result) {
+    var user = result.data && result.data.session ? result.data.session.user : null;
+    callback(user);
+  });
+}
+
+function startFlow(m) {
+  currentMode = m;
   currentCondition = null;
   currentSymptoms = [];
   currentSleep = null;
   document.querySelectorAll('.symptom-tag').forEach(function(t) { t.classList.remove('selected'); });
   document.querySelectorAll('.choice-btn').forEach(function(b) { b.classList.remove('selected-good','selected-neutral','selected-bad'); });
-}
 
-function startFlow(m) {
-  resetFlow();
-  currentMode = m;
   if (currentMode === 'review') {
     document.getElementById('q1-step').textContent = '1 / 2';
     document.getElementById('q1-text').textContent = '今日1日の体調は、\nいかがでしたか？';
@@ -311,25 +301,25 @@ function startFlow(m) {
 }
 
 function onClickReview() {
-  if (!currentUser) {
-    sessionStorage.setItem('pendingMode', 'review');
-    goTo('screen-login');
-    return;
-  }
-  startFlow('review');
+  getUser(function(user) {
+    if (!user) {
+      sessionStorage.setItem('pendingMode', 'review');
+      goTo('screen-login');
+    } else {
+      startFlow('review');
+    }
+  });
 }
 
 function onClickNow() {
-  if (!currentUser) {
-    sessionStorage.setItem('pendingMode', 'now');
-    goTo('screen-login');
-    return;
-  }
-  startFlow('now');
-}
-
-function onClickSkip() {
-  showHistory();
+  getUser(function(user) {
+    if (!user) {
+      sessionStorage.setItem('pendingMode', 'now');
+      goTo('screen-login');
+    } else {
+      startFlow('now');
+    }
+  });
 }
 
 function onClickLogin() {
@@ -347,9 +337,6 @@ function onClickLogin() {
       document.getElementById('login-error').textContent = 'メールアドレスまたはパスワードが違います。';
       return;
     }
-    currentUser = result.data.user;
-    console.log('ログイン成功:', currentUser.email);
-
     var pending = sessionStorage.getItem('pendingMode');
     sessionStorage.removeItem('pendingMode');
     if (pending) {
@@ -371,8 +358,7 @@ function onClickSignup() {
   db.auth.signUp({ email: email, password: password }).then(function(result) {
     if (result.error) { document.getElementById('signup-error').textContent = '登録できませんでした: ' + result.error.message; return; }
     if (result.data.user) {
-      currentUser = result.data.user;
-      db.from('profiles').upsert({ id: currentUser.id });
+      db.from('profiles').upsert({ id: result.data.user.id });
       var pending = sessionStorage.getItem('pendingMode');
       sessionStorage.removeItem('pendingMode');
       if (pending) {
@@ -401,11 +387,8 @@ function onSelectCondition(val, btn) {
 
 function toggleTag(btn, tag) {
   btn.classList.toggle('selected');
-  if (btn.classList.contains('selected')) {
-    currentSymptoms.push(tag);
-  } else {
-    currentSymptoms = currentSymptoms.filter(function(s) { return s !== tag; });
-  }
+  if (btn.classList.contains('selected')) currentSymptoms.push(tag);
+  else currentSymptoms = currentSymptoms.filter(function(s) { return s !== tag; });
 }
 
 function afterSymptom() {
@@ -429,30 +412,31 @@ function onSelectSleepDetail(val, btn) {
 }
 
 function saveRecord(sleepDetail) {
-  if (!currentUser) { goTo('screen-login'); return; }
-  var payload = {
-    user_id: currentUser.id,
-    record_type: currentMode,
-    condition: currentCondition,
-    symptoms: currentSymptoms.length > 0 ? currentSymptoms : null,
-    sleep: currentSleep,
-    sleep_detail: sleepDetail || null,
-    recorded_at: new Date().toISOString()
-  };
-  db.from('records').insert(payload).then(function(result) {
-    if (result.error) console.error('保存エラー:', result.error);
-    if (currentMode === 'review') {
-      updateDaysCount();
-      goTo('screen-success');
-    } else {
-      document.getElementById('success-now-time').textContent = getTimeStr() + ' に記録しました。';
-      goTo('screen-success-now');
-    }
+  getUser(function(user) {
+    if (!user) { goTo('screen-login'); return; }
+    db.from('records').insert({
+      user_id: user.id,
+      record_type: currentMode,
+      condition: currentCondition,
+      symptoms: currentSymptoms.length > 0 ? currentSymptoms : null,
+      sleep: currentSleep,
+      sleep_detail: sleepDetail || null,
+      recorded_at: new Date().toISOString()
+    }).then(function(result) {
+      if (result.error) console.error('保存エラー:', result.error);
+      if (currentMode === 'review') {
+        updateDaysCount(user.id);
+        goTo('screen-success');
+      } else {
+        document.getElementById('success-now-time').textContent = getTimeStr() + ' に記録しました。';
+        goTo('screen-success-now');
+      }
+    });
   });
 }
 
-function updateDaysCount() {
-  db.from('records').select('recorded_at').eq('user_id', currentUser.id).eq('record_type', 'review').then(function(result) {
+function updateDaysCount(userId) {
+  db.from('records').select('recorded_at').eq('user_id', userId).eq('record_type', 'review').then(function(result) {
     if (result.data) {
       var unique = new Set(result.data.map(function(r) { return r.recorded_at.slice(0,10); })).size;
       var rem = Math.max(0, 30 - unique);
@@ -468,25 +452,27 @@ function showHistory() {
   goTo('screen-history');
   var list = document.getElementById('history-list');
   list.innerHTML = '<div class="loading">読み込み中...</div>';
-  if (!currentUser) { list.innerHTML = '<div class="empty-state">ログインすると記録が表示されます。</div>'; return; }
-  db.from('records').select('*').eq('user_id', currentUser.id).order('recorded_at', { ascending: false }).limit(30).then(function(result) {
-    var data = result.data;
-    if (!data || data.length === 0) {
-      list.innerHTML = '<div class="section-title">あしあと</div><div class="empty-state">まだ記録がありません。<br>最初の記録をつけてみましょう。</div>';
-      return;
-    }
-    var cLabel = { good: '元気だった', neutral: '普通だった', bad: 'かなりしんどかった' };
-    var dotC = { good: 'dot-good', neutral: 'dot-neutral', bad: 'dot-bad' };
-    var html = '<div class="section-title">あしあと</div>';
-    data.forEach(function(r) {
-      var d = new Date(r.recorded_at);
-      var ds = (d.getMonth()+1) + '/' + d.getDate();
-      var ts = d.getHours() + ':' + String(d.getMinutes()).padStart(2,'0');
-      var tags = (r.symptoms || []).map(function(s) { return '<span class="history-tag">' + s + '</span>'; }).join('');
-      var typeTag = r.record_type === 'now' ? '<span class="history-tag">追加記録</span>' : '';
-      html += '<div class="history-item"><div class="history-dot ' + (dotC[r.condition]||'dot-empty') + '"></div><div class="history-date">' + ds + '<span class="history-time">' + ts + '</span></div><div class="history-status">' + (cLabel[r.condition]||'') + '</div><div class="history-tags">' + typeTag + tags + '</div></div>';
+  getUser(function(user) {
+    if (!user) { list.innerHTML = '<div class="empty-state">ログインすると記録が表示されます。</div>'; return; }
+    db.from('records').select('*').eq('user_id', user.id).order('recorded_at', { ascending: false }).limit(30).then(function(result) {
+      var data = result.data;
+      if (!data || data.length === 0) {
+        list.innerHTML = '<div class="section-title">あしあと</div><div class="empty-state">まだ記録がありません。<br>最初の記録をつけてみましょう。</div>';
+        return;
+      }
+      var cLabel = { good: '元気だった', neutral: '普通だった', bad: 'かなりしんどかった' };
+      var dotC = { good: 'dot-good', neutral: 'dot-neutral', bad: 'dot-bad' };
+      var html = '<div class="section-title">あしあと</div>';
+      data.forEach(function(r) {
+        var d = new Date(r.recorded_at);
+        var ds = (d.getMonth()+1) + '/' + d.getDate();
+        var ts = d.getHours() + ':' + String(d.getMinutes()).padStart(2,'0');
+        var tags = (r.symptoms || []).map(function(s) { return '<span class="history-tag">' + s + '</span>'; }).join('');
+        var typeTag = r.record_type === 'now' ? '<span class="history-tag">追加記録</span>' : '';
+        html += '<div class="history-item"><div class="history-dot ' + (dotC[r.condition]||'dot-empty') + '"></div><div class="history-date">' + ds + '<span class="history-time">' + ts + '</span></div><div class="history-status">' + (cLabel[r.condition]||'') + '</div><div class="history-tags">' + typeTag + tags + '</div></div>';
+      });
+      list.innerHTML = html;
     });
-    list.innerHTML = html;
   });
 }
 </script>
