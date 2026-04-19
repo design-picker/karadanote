@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>からだノート</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;500;700&family=DM+Serif+Display&display=swap');
 
@@ -70,7 +69,6 @@
 
   .app-date { font-size: 12px; color: var(--text-muted); font-weight: 300; }
 
-  /* ONBOARDING */
   .onboarding {
     background: var(--text);
     color: var(--bg);
@@ -137,7 +135,6 @@
     padding: 16px 32px;
     font-family: 'Zen Kaku Gothic New', sans-serif;
     font-size: 14px;
-    font-weight: 400;
     cursor: pointer;
     width: 100%;
     transition: all 0.2s;
@@ -156,21 +153,23 @@
     text-underline-offset: 3px;
   }
 
-  /* AUTH */
   .auth-screen {
     padding: 60px 36px 48px;
-    justify-content: center;
-    gap: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
 
-  .auth-title {
-    font-size: 24px;
-    font-weight: 300;
-    line-height: 1.4;
-    margin-bottom: 8px;
+  .auth-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--text-muted);
+    margin-bottom: 20px;
   }
 
-  .auth-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.6; }
+  .auth-title { font-size: 24px; font-weight: 300; margin-bottom: 4px; }
+  .auth-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.6; }
 
   .input-field {
     width: 100%;
@@ -183,7 +182,6 @@
     color: var(--text);
     outline: none;
     transition: border-color 0.2s;
-    margin-bottom: 12px;
   }
 
   .input-field:focus { border-color: var(--accent); }
@@ -200,11 +198,9 @@
     cursor: pointer;
     width: 100%;
     transition: all 0.2s;
-    margin-bottom: 12px;
   }
 
   .btn-dark:active { transform: scale(0.98); opacity: 0.9; }
-  .btn-dark:disabled { opacity: 0.5; cursor: default; }
 
   .auth-switch {
     text-align: center;
@@ -215,14 +211,8 @@
     text-underline-offset: 3px;
   }
 
-  .error-msg {
-    font-size: 13px;
-    color: var(--bad);
-    text-align: center;
-    padding: 4px;
-  }
+  .error-msg { font-size: 13px; color: var(--bad); text-align: center; min-height: 20px; }
 
-  /* QUESTION */
   .question-content {
     flex: 1;
     padding: 16px 24px 40px;
@@ -238,6 +228,7 @@
     line-height: 1.4;
     letter-spacing: -0.01em;
     margin-bottom: 40px;
+    white-space: pre-line;
   }
 
   .choice-group { display: flex; flex-direction: column; gap: 12px; }
@@ -284,7 +275,6 @@
   }
 
   .symptom-tag.selected { background: rgba(123,107,93,0.1); border-color: var(--accent); color: var(--accent); }
-  .symptom-tag:active { transform: scale(0.96); }
 
   .submit-btn {
     background: var(--text);
@@ -300,9 +290,6 @@
     transition: all 0.2s;
   }
 
-  .submit-btn:active { transform: scale(0.98); opacity: 0.9; }
-
-  /* SUCCESS */
   .success-screen {
     background: var(--good);
     color: white;
@@ -332,9 +319,6 @@
     width: 100%;
   }
 
-  .btn-ghost:active { transform: scale(0.98); opacity: 0.9; }
-
-  /* DONE */
   .analysis-card {
     background: var(--surface);
     border-radius: var(--radius);
@@ -350,7 +334,6 @@
   .days-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 1s ease; }
   .days-text { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
 
-  /* HISTORY */
   .history-content {
     flex: 1;
     padding: 8px 24px 40px;
@@ -383,10 +366,8 @@
   .history-tags { display: flex; gap: 4px; flex-wrap: wrap; }
   .history-tag { font-size: 10px; background: var(--surface2); color: var(--text-muted); padding: 3px 8px; border-radius: 50px; }
   .history-time { font-size: 10px; color: var(--accent-light); display: block; }
-
   .empty-state { text-align: center; color: var(--text-muted); font-size: 14px; padding: 48px 24px; line-height: 1.8; }
 
-  /* NAV */
   .bottom-nav {
     position: sticky;
     bottom: 0;
@@ -418,44 +399,44 @@
         自分のペースで続けましょう。
       </div>
     </div>
-    <button class="btn-primary" onclick="startFlow('review')">今日1日を振り返る</button>
-    <button class="btn-secondary" onclick="startFlow('now')">今、気になることを記録する</button>
-    <div class="skip-note" onclick="goTo('screen-history')">今日は体調が悪いのでスキップ</div>
+    <button class="btn-primary" id="btn-review">今日1日を振り返る</button>
+    <button class="btn-secondary" id="btn-now">今、気になることを記録する</button>
+    <div class="skip-note" id="btn-skip">今日は体調が悪いのでスキップ</div>
   </div>
 
   <!-- LOGIN -->
   <div class="screen auth-screen" id="screen-login">
-    <div class="app-logo" style="font-family:'DM Serif Display',serif; letter-spacing:0.18em; color:var(--text-muted); margin-bottom:32px;">KARADA NOTE</div>
+    <div class="auth-logo">KARADA NOTE</div>
     <div class="auth-title">ログイン</div>
     <div class="auth-sub">記録を保存するためにログインしてください。</div>
-    <input class="input-field" type="email" id="login-email" placeholder="メールアドレス">
-    <input class="input-field" type="password" id="login-password" placeholder="パスワード">
+    <input class="input-field" type="email" id="login-email" placeholder="メールアドレス" autocomplete="email">
+    <input class="input-field" type="password" id="login-password" placeholder="パスワード" autocomplete="current-password">
     <div class="error-msg" id="login-error"></div>
-    <button class="btn-dark" onclick="handleLogin()">ログイン</button>
-    <div class="auth-switch" onclick="goTo('screen-signup')">アカウントをお持ちでない方はこちら</div>
+    <button class="btn-dark" id="btn-login">ログイン</button>
+    <div class="auth-switch" id="btn-to-signup">アカウントをお持ちでない方はこちら</div>
   </div>
 
   <!-- SIGNUP -->
   <div class="screen auth-screen" id="screen-signup">
-    <div class="app-logo" style="font-family:'DM Serif Display',serif; letter-spacing:0.18em; color:var(--text-muted); margin-bottom:32px;">KARADA NOTE</div>
+    <div class="auth-logo">KARADA NOTE</div>
     <div class="auth-title">アカウント作成</div>
     <div class="auth-sub">メールアドレスで登録します。</div>
-    <input class="input-field" type="email" id="signup-email" placeholder="メールアドレス">
-    <input class="input-field" type="password" id="signup-password" placeholder="パスワード（6文字以上）">
+    <input class="input-field" type="email" id="signup-email" placeholder="メールアドレス" autocomplete="email">
+    <input class="input-field" type="password" id="signup-password" placeholder="パスワード（6文字以上）" autocomplete="new-password">
     <div class="error-msg" id="signup-error"></div>
-    <button class="btn-dark" onclick="handleSignup()">登録する</button>
-    <div class="auth-switch" onclick="goTo('screen-login')">すでにアカウントをお持ちの方</div>
+    <button class="btn-dark" id="btn-signup">登録する</button>
+    <div class="auth-switch" id="btn-to-login">すでにアカウントをお持ちの方</div>
   </div>
 
   <!-- VERIFY -->
   <div class="screen auth-screen" id="screen-verify">
-    <div class="success-icon" style="font-size:48px;">✉️</div>
+    <div style="font-size:48px; text-align:center; margin-bottom:16px;">✉️</div>
     <div class="auth-title">メールを確認してください</div>
-    <div class="auth-sub">確認メールを送りました。<br>リンクをクリックして登録を完了してください。</div>
-    <button class="btn-dark" onclick="goTo('screen-login')">ログイン画面へ</button>
+    <div class="auth-sub">確認メールを送りました。<br>リンクをクリックして登録を完了し、<br>もう一度ログインしてください。</div>
+    <button class="btn-dark" id="btn-verify-to-login">ログイン画面へ</button>
   </div>
 
-  <!-- Q1: 体調 -->
+  <!-- Q1 -->
   <div class="screen" id="screen-q1">
     <div class="app-header">
       <div class="app-logo">KARADA NOTE</div>
@@ -463,16 +444,16 @@
     </div>
     <div class="question-content">
       <div class="question-step" id="q1-step">1 / 2</div>
-      <div class="question-text" id="q1-text">今日1日の体調は、<br>いかがでしたか？</div>
+      <div class="question-text" id="q1-text">今日1日の体調は、\nいかがでしたか？</div>
       <div class="choice-group">
-        <button class="choice-btn" onclick="selectCondition('good', this)">元気だった</button>
-        <button class="choice-btn" onclick="selectCondition('neutral', this)">普通だった</button>
-        <button class="choice-btn" onclick="selectCondition('bad', this)">かなりしんどかった</button>
+        <button class="choice-btn" data-val="good">元気だった</button>
+        <button class="choice-btn" data-val="neutral">普通だった</button>
+        <button class="choice-btn" data-val="bad">かなりしんどかった</button>
       </div>
     </div>
   </div>
 
-  <!-- Q1b: 症状 -->
+  <!-- Q1b -->
   <div class="screen" id="screen-q1b">
     <div class="app-header">
       <div class="app-logo">KARADA NOTE</div>
@@ -480,23 +461,23 @@
     </div>
     <div class="question-content">
       <div class="question-step" id="q1b-step">1 / 2</div>
-      <div class="question-text">どのあたりが<br>気になりましたか？</div>
+      <div class="question-text">どのあたりが\n気になりましたか？</div>
       <div class="optional-note">任意です。スキップしても大丈夫です。</div>
       <div class="symptom-group">
-        <button class="symptom-tag" onclick="toggleSymptom(this)">頭</button>
-        <button class="symptom-tag" onclick="toggleSymptom(this)">肩・首</button>
-        <button class="symptom-tag" onclick="toggleSymptom(this)">めまい</button>
-        <button class="symptom-tag" onclick="toggleSymptom(this)">だるさ</button>
-        <button class="symptom-tag" onclick="toggleSymptom(this)">気持ち</button>
-        <button class="symptom-tag" onclick="toggleSymptom(this)">その他</button>
+        <button class="symptom-tag" data-tag="頭">頭</button>
+        <button class="symptom-tag" data-tag="肩・首">肩・首</button>
+        <button class="symptom-tag" data-tag="めまい">めまい</button>
+        <button class="symptom-tag" data-tag="だるさ">だるさ</button>
+        <button class="symptom-tag" data-tag="気持ち">気持ち</button>
+        <button class="symptom-tag" data-tag="その他">その他</button>
       </div>
       <div style="flex:1;"></div>
-      <button class="submit-btn" onclick="afterSymptom()">次へ</button>
-      <div class="skip-note" style="color:var(--text-muted); margin-top:12px;" onclick="afterSymptom()">スキップして次へ</div>
+      <button class="submit-btn" id="btn-symptom-next">次へ</button>
+      <div class="skip-note" style="color:var(--text-muted); margin-top:12px;" id="btn-symptom-skip">スキップして次へ</div>
     </div>
   </div>
 
-  <!-- Q2: 睡眠 -->
+  <!-- Q2 -->
   <div class="screen" id="screen-q2">
     <div class="app-header">
       <div class="app-logo">KARADA NOTE</div>
@@ -504,16 +485,16 @@
     </div>
     <div class="question-content">
       <div class="question-step">2 / 2</div>
-      <div class="question-text">昨夜の眠りは<br>いかがでしたか？</div>
+      <div class="question-text">昨夜の眠りは\nいかがでしたか？</div>
       <div class="choice-group">
-        <button class="choice-btn" onclick="selectSleep('good', this)">よく眠れた</button>
-        <button class="choice-btn" onclick="selectSleep('neutral', this)">普通だった</button>
-        <button class="choice-btn" onclick="selectSleep('bad', this)">あまり眠れなかった</button>
+        <button class="choice-btn" data-val="good">よく眠れた</button>
+        <button class="choice-btn" data-val="neutral">普通だった</button>
+        <button class="choice-btn" data-val="bad">あまり眠れなかった</button>
       </div>
     </div>
   </div>
 
-  <!-- Q2b: 睡眠詳細 -->
+  <!-- Q2b -->
   <div class="screen" id="screen-q2b">
     <div class="app-header">
       <div class="app-logo">KARADA NOTE</div>
@@ -521,10 +502,10 @@
     </div>
     <div class="question-content">
       <div class="question-step">2 / 2</div>
-      <div class="question-text">どんな感じで<br>眠れなかったですか？</div>
+      <div class="question-text">どんな感じで\n眠れなかったですか？</div>
       <div class="choice-group">
-        <button class="choice-btn" onclick="selectSleepDetail('short', this)">時間が短かった</button>
-        <button class="choice-btn" onclick="selectSleepDetail('quality', this)">寝た気がしなかった</button>
+        <button class="choice-btn" data-val="short">時間が短かった</button>
+        <button class="choice-btn" data-val="quality">寝た気がしなかった</button>
       </div>
     </div>
   </div>
@@ -534,8 +515,8 @@
     <div class="success-icon">✓</div>
     <div class="success-title">記録できました。<br>ありがとうございます。</div>
     <div class="success-sub">データが少しずつ<br>積み重なっていきます。</div>
-    <button class="btn-ghost" onclick="loadHistory(); goTo('screen-history')">あしあとを見る</button>
-    <button class="btn-ghost" onclick="goTo('screen-done')">ホームへ</button>
+    <button class="btn-ghost" id="btn-to-history">あしあとを見る</button>
+    <button class="btn-ghost" id="btn-to-done">ホームへ</button>
   </div>
 
   <!-- SUCCESS NOW -->
@@ -543,8 +524,8 @@
     <div class="success-icon">✓</div>
     <div class="success-title">記録しました。</div>
     <div class="success-sub" id="success-now-time"></div>
-    <button class="btn-ghost" onclick="loadHistory(); goTo('screen-history')">あしあとを見る</button>
-    <button class="btn-ghost" onclick="goTo('screen-onboarding')">ホームへ</button>
+    <button class="btn-ghost" id="btn-now-to-history">あしあとを見る</button>
+    <button class="btn-ghost" id="btn-now-to-home">ホームへ</button>
   </div>
 
   <!-- DONE -->
@@ -555,7 +536,7 @@
     </div>
     <div class="question-content">
       <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:24px;">
-        <div class="question-text" style="margin-bottom:0;">今日の記録、<br>おつかれさまでした。</div>
+        <div class="question-text" style="margin-bottom:0;">今日の記録、\nおつかれさまでした。</div>
         <div class="analysis-card">
           <div class="analysis-title">あなたのパターン</div>
           <div class="analysis-body">あと <span class="analysis-highlight" id="days-remaining">30</span> 日記録が溜まると、<br>あなただけの傾向が見えてきます。</div>
@@ -568,7 +549,7 @@
     </div>
     <div class="bottom-nav">
       <div class="nav-item active"><div class="nav-icon">○</div><div class="nav-label">きろく</div></div>
-      <div class="nav-item" onclick="loadHistory(); goTo('screen-history')"><div class="nav-icon">≡</div><div class="nav-label">あしあと</div></div>
+      <div class="nav-item" id="btn-done-to-history"><div class="nav-icon">≡</div><div class="nav-label">あしあと</div></div>
     </div>
   </div>
 
@@ -582,7 +563,7 @@
       <div class="loading">読み込み中...</div>
     </div>
     <div class="bottom-nav">
-      <div class="nav-item" onclick="goTo('screen-onboarding')"><div class="nav-icon">○</div><div class="nav-label">きろく</div></div>
+      <div class="nav-item" id="btn-history-to-home"><div class="nav-icon">○</div><div class="nav-label">きろく</div></div>
       <div class="nav-item active"><div class="nav-icon">≡</div><div class="nav-label">あしあと</div></div>
     </div>
   </div>
@@ -590,29 +571,39 @@
 </div>
 
 <script>
+(async function() {
+  // Supabase setup
   const SUPABASE_URL = 'https://hmznnknltmrjevbrlqnr.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_9Q9DHOTpC1zY7RAW2yz7Uw_VsPpnkwR';
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+  // Load Supabase
+  await loadScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js');
+  const { createClient } = window.supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // State
   let mode = 'review';
   let currentCondition = null;
   let currentSymptoms = [];
   let currentSleep = null;
   let currentUser = null;
 
+  // Date
   const now = new Date();
-  document.querySelectorAll('#today-date').forEach(el => {
-    el.textContent = (now.getMonth()+1) + '/' + now.getDate();
+  const dateStr = (now.getMonth()+1) + '/' + now.getDate();
+  document.querySelectorAll('#today-date').forEach(el => el.textContent = dateStr);
+
+  // Check session
+  const { data: { session } } = await db.auth.getSession();
+  if (session) currentUser = session.user;
+
+  // Auth state change
+  db.auth.onAuthStateChange((event, session) => {
+    if (session) currentUser = session.user;
+    else currentUser = null;
   });
 
-  // 起動時にセッション確認
-  (async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session) {
-      currentUser = session.user;
-    }
-  })();
-
+  // Navigation
   function goTo(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
@@ -624,85 +615,123 @@
     return d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0');
   }
 
+  // Onboarding buttons
+  document.getElementById('btn-review').addEventListener('click', () => startFlow('review'));
+  document.getElementById('btn-now').addEventListener('click', () => startFlow('now'));
+  document.getElementById('btn-skip').addEventListener('click', () => { loadHistory(); goTo('screen-history'); });
+
   function startFlow(m) {
     mode = m;
     currentCondition = null;
     currentSymptoms = [];
     currentSleep = null;
 
-    if (!currentUser) {
-      goTo('screen-login');
-      return;
-    }
+    if (!currentUser) { goTo('screen-login'); return; }
 
     if (mode === 'review') {
       document.getElementById('q1-step').textContent = '1 / 2';
       document.getElementById('q1-text').textContent = '今日1日の体調は、\nいかがでしたか？';
-      document.getElementById('q1-text').style.whiteSpace = 'pre-line';
     } else {
       document.getElementById('q1-step').textContent = '記録';
       document.getElementById('q1-text').textContent = '今、どんな感じですか？';
-      document.getElementById('q1-text').style.whiteSpace = 'normal';
     }
     goTo('screen-q1');
   }
 
-  function selectCondition(val, btn) {
-    currentCondition = val;
-    btn.closest('.choice-group').querySelectorAll('.choice-btn').forEach(b => {
-      b.classList.remove('selected-good', 'selected-neutral', 'selected-bad');
-    });
-    btn.classList.add('selected-' + val);
-    setTimeout(() => {
-      if (val === 'neutral' || val === 'bad') {
-        document.getElementById('q1b-step').textContent = mode === 'review' ? '1 / 2' : '記録';
-        goTo('screen-q1b');
-      } else {
-        if (mode === 'review') goTo('screen-q2');
-        else saveAndComplete();
-      }
-    }, 250);
-  }
+  // Auth
+  document.getElementById('btn-login').addEventListener('click', async () => {
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    document.getElementById('login-error').textContent = '';
+    if (!email || !password) { document.getElementById('login-error').textContent = 'メールアドレスとパスワードを入力してください。'; return; }
+    const { data, error } = await db.auth.signInWithPassword({ email, password });
+    if (error) { document.getElementById('login-error').textContent = 'メールアドレスまたはパスワードが違います。'; return; }
+    currentUser = data.user;
+    goTo('screen-onboarding');
+  });
 
-  function toggleSymptom(btn) {
-    btn.classList.toggle('selected');
-    const tag = btn.textContent;
-    if (btn.classList.contains('selected')) {
-      currentSymptoms.push(tag);
+  document.getElementById('btn-to-signup').addEventListener('click', () => goTo('screen-signup'));
+  document.getElementById('btn-to-login').addEventListener('click', () => goTo('screen-login'));
+  document.getElementById('btn-verify-to-login').addEventListener('click', () => goTo('screen-login'));
+
+  document.getElementById('btn-signup').addEventListener('click', async () => {
+    const email = document.getElementById('signup-email').value.trim();
+    const password = document.getElementById('signup-password').value;
+    document.getElementById('signup-error').textContent = '';
+    if (!email || !password) { document.getElementById('signup-error').textContent = 'メールアドレスとパスワードを入力してください。'; return; }
+    if (password.length < 6) { document.getElementById('signup-error').textContent = 'パスワードは6文字以上にしてください。'; return; }
+    const { data, error } = await db.auth.signUp({ email, password });
+    if (error) { document.getElementById('signup-error').textContent = '登録できませんでした。もう一度お試しください。'; return; }
+    if (data.session) {
+      currentUser = data.session.user;
+      await db.from('profiles').upsert({ id: currentUser.id });
+      goTo('screen-onboarding');
     } else {
-      currentSymptoms = currentSymptoms.filter(s => s !== tag);
+      goTo('screen-verify');
     }
-  }
+  });
+
+  // Q1 choices
+  document.querySelectorAll('#screen-q1 .choice-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentCondition = btn.dataset.val;
+      document.querySelectorAll('#screen-q1 .choice-btn').forEach(b => b.classList.remove('selected-good','selected-neutral','selected-bad'));
+      btn.classList.add('selected-' + currentCondition);
+      setTimeout(() => {
+        if (currentCondition === 'neutral' || currentCondition === 'bad') {
+          document.getElementById('q1b-step').textContent = mode === 'review' ? '1 / 2' : '記録';
+          goTo('screen-q1b');
+        } else {
+          if (mode === 'review') goTo('screen-q2');
+          else saveRecord();
+        }
+      }, 250);
+    });
+  });
+
+  // Symptom tags
+  document.querySelectorAll('.symptom-tag').forEach(tag => {
+    tag.addEventListener('click', () => {
+      tag.classList.toggle('selected');
+      const t = tag.dataset.tag;
+      if (tag.classList.contains('selected')) currentSymptoms.push(t);
+      else currentSymptoms = currentSymptoms.filter(s => s !== t);
+    });
+  });
+
+  document.getElementById('btn-symptom-next').addEventListener('click', afterSymptom);
+  document.getElementById('btn-symptom-skip').addEventListener('click', afterSymptom);
 
   function afterSymptom() {
     if (mode === 'review') goTo('screen-q2');
-    else saveAndComplete();
+    else saveRecord();
   }
 
-  function selectSleep(val, btn) {
-    currentSleep = val;
-    btn.closest('.choice-group').querySelectorAll('.choice-btn').forEach(b => {
-      b.classList.remove('selected-good', 'selected-neutral', 'selected-bad');
+  // Q2 choices
+  document.querySelectorAll('#screen-q2 .choice-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentSleep = btn.dataset.val;
+      document.querySelectorAll('#screen-q2 .choice-btn').forEach(b => b.classList.remove('selected-good','selected-neutral','selected-bad'));
+      btn.classList.add('selected-' + currentSleep);
+      setTimeout(() => {
+        if (currentSleep === 'bad') goTo('screen-q2b');
+        else saveRecord();
+      }, 250);
     });
-    btn.classList.add('selected-' + val);
-    setTimeout(() => {
-      if (val === 'bad') goTo('screen-q2b');
-      else saveAndComplete();
-    }, 250);
-  }
+  });
 
-  function selectSleepDetail(val, btn) {
-    btn.closest('.choice-group').querySelectorAll('.choice-btn').forEach(b => {
-      b.classList.remove('selected-good', 'selected-neutral', 'selected-bad');
+  // Q2b choices
+  document.querySelectorAll('#screen-q2b .choice-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.classList.add('selected-neutral');
+      setTimeout(() => saveRecord(btn.dataset.val), 250);
     });
-    btn.classList.add('selected-neutral');
-    setTimeout(() => saveAndComplete(val), 250);
-  }
+  });
 
-  async function saveAndComplete(sleepDetail = null) {
+  // Save
+  async function saveRecord(sleepDetail = null) {
     if (!currentUser) { goTo('screen-login'); return; }
-
-    const { error } = await supabase.from('records').insert({
+    await db.from('records').insert({
       user_id: currentUser.id,
       record_type: mode,
       condition: currentCondition,
@@ -711,10 +740,6 @@
       sleep_detail: sleepDetail,
       recorded_at: new Date().toISOString()
     });
-
-    if (error) {
-      console.error(error);
-    }
 
     if (mode === 'review') {
       await updateDaysCount();
@@ -726,104 +751,64 @@
   }
 
   async function updateDaysCount() {
-    const { data } = await supabase
-      .from('records')
-      .select('recorded_at')
-      .eq('user_id', currentUser.id)
-      .eq('record_type', 'review');
-
+    const { data } = await db.from('records').select('recorded_at').eq('user_id', currentUser.id).eq('record_type', 'review');
     if (data) {
-      const uniqueDays = new Set(data.map(r => r.recorded_at.slice(0, 10))).size;
-      const remaining = Math.max(0, 30 - uniqueDays);
-      const pct = Math.min(100, (uniqueDays / 30) * 100);
-      document.getElementById('days-remaining').textContent = remaining;
+      const unique = new Set(data.map(r => r.recorded_at.slice(0,10))).size;
+      const rem = Math.max(0, 30 - unique);
+      const pct = Math.min(100, (unique / 30) * 100);
+      document.getElementById('days-remaining').textContent = rem;
       document.getElementById('days-fill-bar').style.width = pct + '%';
-      document.getElementById('days-text').textContent = uniqueDays + ' / 30日';
+      document.getElementById('days-text').textContent = unique + ' / 30日';
     }
   }
 
+  // Success buttons
+  document.getElementById('btn-to-history').addEventListener('click', () => { loadHistory(); goTo('screen-history'); });
+  document.getElementById('btn-to-done').addEventListener('click', () => goTo('screen-done'));
+  document.getElementById('btn-now-to-history').addEventListener('click', () => { loadHistory(); goTo('screen-history'); });
+  document.getElementById('btn-now-to-home').addEventListener('click', () => goTo('screen-onboarding'));
+  document.getElementById('btn-done-to-history').addEventListener('click', () => { loadHistory(); goTo('screen-history'); });
+  document.getElementById('btn-history-to-home').addEventListener('click', () => goTo('screen-onboarding'));
+
+  // Load history
   async function loadHistory() {
     const list = document.getElementById('history-list');
     list.innerHTML = '<div class="loading">読み込み中...</div>';
-
-    if (!currentUser) {
-      list.innerHTML = '<div class="empty-state">ログインすると記録が表示されます。</div>';
-      return;
-    }
-
-    const { data, error } = await supabase
-      .from('records')
-      .select('*')
-      .eq('user_id', currentUser.id)
-      .order('recorded_at', { ascending: false })
-      .limit(30);
-
-    if (error || !data || data.length === 0) {
+    if (!currentUser) { list.innerHTML = '<div class="empty-state">ログインすると記録が表示されます。</div>'; return; }
+    const { data } = await db.from('records').select('*').eq('user_id', currentUser.id).order('recorded_at', { ascending: false }).limit(30);
+    if (!data || data.length === 0) {
       list.innerHTML = '<div class="section-title">あしあと</div><div class="empty-state">まだ記録がありません。<br>最初の記録をつけてみましょう。</div>';
       return;
     }
-
-    const conditionLabel = { good: '元気だった', neutral: '普通だった', bad: 'かなりしんどかった' };
-    const dotClass = { good: 'dot-good', neutral: 'dot-neutral', bad: 'dot-bad' };
-
+    const cLabel = { good: '元気だった', neutral: '普通だった', bad: 'かなりしんどかった' };
+    const dotC = { good: 'dot-good', neutral: 'dot-neutral', bad: 'dot-bad' };
     let html = '<div class="section-title">あしあと</div>';
     data.forEach(r => {
       const d = new Date(r.recorded_at);
-      const dateStr = (d.getMonth()+1) + '/' + d.getDate();
-      const timeStr = d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0');
-      const dot = dotClass[r.condition] || 'dot-empty';
-      const label = conditionLabel[r.condition] || '';
-      const tags = r.symptoms ? r.symptoms.map(s => `<span class="history-tag">${s}</span>`).join('') : '';
+      const ds = (d.getMonth()+1) + '/' + d.getDate();
+      const ts = d.getHours() + ':' + String(d.getMinutes()).padStart(2,'0');
+      const tags = (r.symptoms || []).map(s => `<span class="history-tag">${s}</span>`).join('');
       const typeTag = r.record_type === 'now' ? '<span class="history-tag">追加記録</span>' : '';
-
-      html += `
-        <div class="history-item">
-          <div class="history-dot ${dot}"></div>
-          <div class="history-date">${dateStr}<span class="history-time">${timeStr}</span></div>
-          <div class="history-status">${label}</div>
-          <div class="history-tags">${typeTag}${tags}</div>
-        </div>`;
+      html += `<div class="history-item">
+        <div class="history-dot ${dotC[r.condition]||'dot-empty'}"></div>
+        <div class="history-date">${ds}<span class="history-time">${ts}</span></div>
+        <div class="history-status">${cLabel[r.condition]||''}</div>
+        <div class="history-tags">${typeTag}${tags}</div>
+      </div>`;
     });
-
     list.innerHTML = html;
   }
 
-  // AUTH
-  async function handleLogin() {
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    document.getElementById('login-error').textContent = '';
-
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      document.getElementById('login-error').textContent = 'メールアドレスまたはパスワードが違います。';
-      return;
-    }
-    currentUser = data.user;
-    goTo('screen-onboarding');
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload = resolve;
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
   }
-
-  async function handleSignup() {
-    const email = document.getElementById('signup-email').value;
-    const password = document.getElementById('signup-password').value;
-    document.getElementById('signup-error').textContent = '';
-
-    const { error } = await supabase.auth.signUp({ email, password });
-    if (error) {
-      document.getElementById('signup-error').textContent = '登録できませんでした。もう一度お試しください。';
-      return;
-    }
-
-    // profilesテーブルに追加
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session) {
-      currentUser = session.user;
-      await supabase.from('profiles').insert({ id: currentUser.id });
-      goTo('screen-onboarding');
-    } else {
-      goTo('screen-verify');
-    }
-  }
+})();
 </script>
 </body>
 </html>
