@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>からだノート</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;500;700&family=DM+Serif+Display&display=swap');
+
+  :root {
+    --bg: #F5F2EE;
+    --surface: #FFFFFF;
+    --surface2: #F0EDE8;
+    --text: #2C2825;
+    --text-muted: #9A9088;
+    --accent: #7B6B5D;
+    --accent-light: #C4B8AC;
+    --good: #6B9E7E;
+    --neutral: #C4A35A;
+    --bad: #C47B6B;
+    --radius: 20px;
+    --radius-sm: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+  }
+
+  .phone-wrapper {
+    width: 100%;
+    max-width: 390px;
+    min-height: 100vh;
+    background: var(--bg);
+  }
+
+  .screen {
+    display: none;
+    min-height: 100vh;
+    flex-direction: column;
+    animation: fadeIn 0.3s ease;
+  }
+  .screen.active { display: flex; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .app-header {
+    padding: 56px 28px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .app-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--text-muted);
+  }
+
+  .app-date { font-size: 12px; color: var(--text-muted); font-weight: 300; }
+
+  /* ONBOARDING */
+  .onboarding {
+    background: var(--text);
+    color: var(--bg);
+    padding: 60px 36px 48px;
+    justify-content: space-between;
+  }
+
+  .onboarding-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    color: var(--accent-light);
+    margin-bottom: 60px;
+  }
+
+  .onboarding-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .onboarding-title {
+    font-size: 32px;
+    font-weight: 300;
+    line-height: 1.4;
+    margin-bottom: 32px;
+    letter-spacing: -0.01em;
+  }
+
+  .onboarding-title strong { font-weight: 700; display: block; }
+
+  .onboarding-note {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--accent-light);
+    border-left: 2px solid var(--accent);
+    padding-left: 16px;
+    margin-bottom: 40px;
+  }
+
+  .btn-primary {
+    background: var(--bg);
+    color: var(--text);
+    border: none;
+    border-radius: 50px;
+    padding: 18px 32px;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s;
+    margin-bottom: 12px;
+  }
+
+  .btn-primary:active { transform: scale(0.98); opacity: 0.9; }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--bg);
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50px;
+    padding: 16px 32px;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s;
+    margin-bottom: 12px;
+  }
+
+  .btn-secondary:active { transform: scale(0.98); opacity: 0.8; }
+
+  .skip-note {
+    text-align: center;
+    font-size: 13px;
+    color: var(--accent-light);
+    padding: 8px;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* AUTH */
+  .auth-screen {
+    padding: 60px 36px 48px;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .auth-title {
+    font-size: 24px;
+    font-weight: 300;
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+
+  .auth-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.6; }
+
+  .input-field {
+    width: 100%;
+    background: var(--surface);
+    border: 2px solid var(--surface2);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 12px;
+  }
+
+  .input-field:focus { border-color: var(--accent); }
+
+  .btn-dark {
+    background: var(--text);
+    color: var(--bg);
+    border: none;
+    border-radius: 50px;
+    padding: 18px 32px;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s;
+    margin-bottom: 12px;
+  }
+
+  .btn-dark:active { transform: scale(0.98); opacity: 0.9; }
+  .btn-dark:disabled { opacity: 0.5; cursor: default; }
+
+  .auth-switch {
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .error-msg {
+    font-size: 13px;
+    color: var(--bad);
+    text-align: center;
+    padding: 4px;
+  }
+
+  /* QUESTION */
+  .question-content {
+    flex: 1;
+    padding: 16px 24px 40px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .question-step { font-size: 11px; color: var(--text-muted); letter-spacing: 0.12em; margin-bottom: 48px; }
+
+  .question-text {
+    font-size: 28px;
+    font-weight: 300;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    margin-bottom: 40px;
+  }
+
+  .choice-group { display: flex; flex-direction: column; gap: 12px; }
+
+  .choice-btn {
+    background: var(--surface);
+    border: 2px solid transparent;
+    border-radius: var(--radius-sm);
+    padding: 20px 24px;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    box-shadow: 0 1px 6px rgba(44,40,37,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .choice-btn::after { content: '›'; font-size: 20px; color: var(--accent-light); }
+  .choice-btn:active { transform: scale(0.98); }
+  .choice-btn.selected-good { background: rgba(107,158,126,0.1); border-color: var(--good); color: var(--good); }
+  .choice-btn.selected-neutral { background: rgba(196,163,90,0.1); border-color: var(--neutral); color: var(--neutral); }
+  .choice-btn.selected-bad { background: rgba(196,123,107,0.1); border-color: var(--bad); color: var(--bad); }
+
+  .optional-note { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
+
+  .symptom-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 32px; }
+
+  .symptom-tag {
+    background: var(--surface);
+    border: 2px solid transparent;
+    border-radius: 50px;
+    padding: 12px 20px;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: 14px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 1px 6px rgba(44,40,37,0.05);
+  }
+
+  .symptom-tag.selected { background: rgba(123,107,93,0.1); border-color: var(--accent); color: var(--accent); }
+  .symptom-tag:active { transform: scale(0.96); }
+
+  .submit-btn {
+    background: var(--text);
+    color: var(--bg);
+    border: none;
+    border-radius: 50px;
+    padding: 20px;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s;
+  }
+
+  .submit-btn:active { transform: scale(0.98); opacity: 0.9; }
+
+  /* SUCCESS */
+  .success-screen {
+    background: var(--good);
+    color: white;
+    padding: 60px 36px 48px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+  }
+
+  .success-icon { font-size: 56px; line-height: 1; }
+  .success-title { font-size: 26px; font-weight: 300; line-height: 1.5; }
+  .success-sub { font-size: 14px; opacity: 0.85; line-height: 1.8; }
+
+  .btn-ghost {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-radius: 50px;
+    padding: 16px 32px;
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+    width: 100%;
+  }
+
+  .btn-ghost:active { transform: scale(0.98); opacity: 0.9; }
+
+  /* DONE */
+  .analysis-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    box-shadow: 0 2px 12px rgba(44,40,37,0.06);
+  }
+
+  .analysis-title { font-size: 14px; font-weight: 500; margin-bottom: 12px; }
+  .analysis-body { font-size: 13px; line-height: 1.8; color: var(--text-muted); }
+  .analysis-highlight { color: var(--accent); font-weight: 500; }
+  .days-counter { display: flex; align-items: center; gap: 12px; margin-top: 16px; }
+  .days-bar { flex: 1; height: 4px; background: var(--surface2); border-radius: 2px; overflow: hidden; }
+  .days-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 1s ease; }
+  .days-text { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
+
+  /* HISTORY */
+  .history-content {
+    flex: 1;
+    padding: 8px 24px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+  }
+
+  .section-title { font-size: 13px; color: var(--text-muted); letter-spacing: 0.08em; padding: 4px 4px 8px; }
+
+  .history-item {
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 1px 6px rgba(44,40,37,0.05);
+  }
+
+  .history-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .dot-good { background: var(--good); }
+  .dot-neutral { background: var(--neutral); }
+  .dot-bad { background: var(--bad); }
+  .dot-empty { background: var(--accent-light); }
+
+  .history-date { font-size: 12px; color: var(--text-muted); width: 48px; flex-shrink: 0; line-height: 1.5; }
+  .history-status { font-size: 13px; font-weight: 500; flex: 1; }
+  .history-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+  .history-tag { font-size: 10px; background: var(--surface2); color: var(--text-muted); padding: 3px 8px; border-radius: 50px; }
+  .history-time { font-size: 10px; color: var(--accent-light); display: block; }
+
+  .empty-state { text-align: center; color: var(--text-muted); font-size: 14px; padding: 48px 24px; line-height: 1.8; }
+
+  /* NAV */
+  .bottom-nav {
+    position: sticky;
+    bottom: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--surface2);
+    display: flex;
+    padding: 12px 0 28px;
+  }
+
+  .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; padding: 8px; }
+  .nav-icon { font-size: 20px; line-height: 1; }
+  .nav-label { font-size: 10px; color: var(--text-muted); letter-spacing: 0.05em; }
+  .nav-item.active .nav-label { color: var(--accent); }
+
+  .loading { text-align: center; color: var(--text-muted); padding: 24px; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="phone-wrapper">
+
+  <!-- ONBOARDING -->
+  <div class="screen onboarding active" id="screen-onboarding">
+    <div class="onboarding-logo">KARADA NOTE</div>
+    <div class="onboarding-main">
+      <div class="onboarding-title">自分の体感を、<br><strong>自分の記録に。</strong></div>
+      <div class="onboarding-note">
+        しんどい日は無理しなくて大丈夫です。<br>
+        完璧でなくていい。<br>
+        自分のペースで続けましょう。
+      </div>
+    </div>
+    <button class="btn-primary" onclick="startFlow('review')">今日1日を振り返る</button>
+    <button class="btn-secondary" onclick="startFlow('now')">今、気になることを記録する</button>
+    <div class="skip-note" onclick="goTo('screen-history')">今日は体調が悪いのでスキップ</div>
+  </div>
+
+  <!-- LOGIN -->
+  <div class="screen auth-screen" id="screen-login">
+    <div class="app-logo" style="font-family:'DM Serif Display',serif; letter-spacing:0.18em; color:var(--text-muted); margin-bottom:32px;">KARADA NOTE</div>
+    <div class="auth-title">ログイン</div>
+    <div class="auth-sub">記録を保存するためにログインしてください。</div>
+    <input class="input-field" type="email" id="login-email" placeholder="メールアドレス">
+    <input class="input-field" type="password" id="login-password" placeholder="パスワード">
+    <div class="error-msg" id="login-error"></div>
+    <button class="btn-dark" onclick="handleLogin()">ログイン</button>
+    <div class="auth-switch" onclick="goTo('screen-signup')">アカウントをお持ちでない方はこちら</div>
+  </div>
+
+  <!-- SIGNUP -->
+  <div class="screen auth-screen" id="screen-signup">
+    <div class="app-logo" style="font-family:'DM Serif Display',serif; letter-spacing:0.18em; color:var(--text-muted); margin-bottom:32px;">KARADA NOTE</div>
+    <div class="auth-title">アカウント作成</div>
+    <div class="auth-sub">メールアドレスで登録します。</div>
+    <input class="input-field" type="email" id="signup-email" placeholder="メールアドレス">
+    <input class="input-field" type="password" id="signup-password" placeholder="パスワード（6文字以上）">
+    <div class="error-msg" id="signup-error"></div>
+    <button class="btn-dark" onclick="handleSignup()">登録する</button>
+    <div class="auth-switch" onclick="goTo('screen-login')">すでにアカウントをお持ちの方</div>
+  </div>
+
+  <!-- VERIFY -->
+  <div class="screen auth-screen" id="screen-verify">
+    <div class="success-icon" style="font-size:48px;">✉️</div>
+    <div class="auth-title">メールを確認してください</div>
+    <div class="auth-sub">確認メールを送りました。<br>リンクをクリックして登録を完了してください。</div>
+    <button class="btn-dark" onclick="goTo('screen-login')">ログイン画面へ</button>
+  </div>
+
+  <!-- Q1: 体調 -->
+  <div class="screen" id="screen-q1">
+    <div class="app-header">
+      <div class="app-logo">KARADA NOTE</div>
+      <div class="app-date" id="today-date"></div>
+    </div>
+    <div class="question-content">
+      <div class="question-step" id="q1-step">1 / 2</div>
+      <div class="question-text" id="q1-text">今日1日の体調は、<br>いかがでしたか？</div>
+      <div class="choice-group">
+        <button class="choice-btn" onclick="selectCondition('good', this)">元気だった</button>
+        <button class="choice-btn" onclick="selectCondition('neutral', this)">普通だった</button>
+        <button class="choice-btn" onclick="selectCondition('bad', this)">かなりしんどかった</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q1b: 症状 -->
+  <div class="screen" id="screen-q1b">
+    <div class="app-header">
+      <div class="app-logo">KARADA NOTE</div>
+      <div class="app-date"></div>
+    </div>
+    <div class="question-content">
+      <div class="question-step" id="q1b-step">1 / 2</div>
+      <div class="question-text">どのあたりが<br>気になりましたか？</div>
+      <div class="optional-note">任意です。スキップしても大丈夫です。</div>
+      <div class="symptom-group">
+        <button class="symptom-tag" onclick="toggleSymptom(this)">頭</button>
+        <button class="symptom-tag" onclick="toggleSymptom(this)">肩・首</button>
+        <button class="symptom-tag" onclick="toggleSymptom(this)">めまい</button>
+        <button class="symptom-tag" onclick="toggleSymptom(this)">だるさ</button>
+        <button class="symptom-tag" onclick="toggleSymptom(this)">気持ち</button>
+        <button class="symptom-tag" onclick="toggleSymptom(this)">その他</button>
+      </div>
+      <div style="flex:1;"></div>
+      <button class="submit-btn" onclick="afterSymptom()">次へ</button>
+      <div class="skip-note" style="color:var(--text-muted); margin-top:12px;" onclick="afterSymptom()">スキップして次へ</div>
+    </div>
+  </div>
+
+  <!-- Q2: 睡眠 -->
+  <div class="screen" id="screen-q2">
+    <div class="app-header">
+      <div class="app-logo">KARADA NOTE</div>
+      <div class="app-date"></div>
+    </div>
+    <div class="question-content">
+      <div class="question-step">2 / 2</div>
+      <div class="question-text">昨夜の眠りは<br>いかがでしたか？</div>
+      <div class="choice-group">
+        <button class="choice-btn" onclick="selectSleep('good', this)">よく眠れた</button>
+        <button class="choice-btn" onclick="selectSleep('neutral', this)">普通だった</button>
+        <button class="choice-btn" onclick="selectSleep('bad', this)">あまり眠れなかった</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2b: 睡眠詳細 -->
+  <div class="screen" id="screen-q2b">
+    <div class="app-header">
+      <div class="app-logo">KARADA NOTE</div>
+      <div class="app-date"></div>
+    </div>
+    <div class="question-content">
+      <div class="question-step">2 / 2</div>
+      <div class="question-text">どんな感じで<br>眠れなかったですか？</div>
+      <div class="choice-group">
+        <button class="choice-btn" onclick="selectSleepDetail('short', this)">時間が短かった</button>
+        <button class="choice-btn" onclick="selectSleepDetail('quality', this)">寝た気がしなかった</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="screen success-screen" id="screen-success">
+    <div class="success-icon">✓</div>
+    <div class="success-title">記録できました。<br>ありがとうございます。</div>
+    <div class="success-sub">データが少しずつ<br>積み重なっていきます。</div>
+    <button class="btn-ghost" onclick="loadHistory(); goTo('screen-history')">あしあとを見る</button>
+    <button class="btn-ghost" onclick="goTo('screen-done')">ホームへ</button>
+  </div>
+
+  <!-- SUCCESS NOW -->
+  <div class="screen success-screen" id="screen-success-now" style="background: var(--accent);">
+    <div class="success-icon">✓</div>
+    <div class="success-title">記録しました。</div>
+    <div class="success-sub" id="success-now-time"></div>
+    <button class="btn-ghost" onclick="loadHistory(); goTo('screen-history')">あしあとを見る</button>
+    <button class="btn-ghost" onclick="goTo('screen-onboarding')">ホームへ</button>
+  </div>
+
+  <!-- DONE -->
+  <div class="screen" id="screen-done">
+    <div class="app-header">
+      <div class="app-logo">KARADA NOTE</div>
+      <div class="app-date"></div>
+    </div>
+    <div class="question-content">
+      <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:24px;">
+        <div class="question-text" style="margin-bottom:0;">今日の記録、<br>おつかれさまでした。</div>
+        <div class="analysis-card">
+          <div class="analysis-title">あなたのパターン</div>
+          <div class="analysis-body">あと <span class="analysis-highlight" id="days-remaining">30</span> 日記録が溜まると、<br>あなただけの傾向が見えてきます。</div>
+          <div class="days-counter">
+            <div class="days-bar"><div class="days-fill" id="days-fill-bar" style="width:0%"></div></div>
+            <div class="days-text" id="days-text">0 / 30日</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item active"><div class="nav-icon">○</div><div class="nav-label">きろく</div></div>
+      <div class="nav-item" onclick="loadHistory(); goTo('screen-history')"><div class="nav-icon">≡</div><div class="nav-label">あしあと</div></div>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="screen" id="screen-history">
+    <div class="app-header">
+      <div class="app-logo">KARADA NOTE</div>
+      <div class="app-date"></div>
+    </div>
+    <div class="history-content" id="history-list">
+      <div class="loading">読み込み中...</div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="goTo('screen-onboarding')"><div class="nav-icon">○</div><div class="nav-label">きろく</div></div>
+      <div class="nav-item active"><div class="nav-icon">≡</div><div class="nav-label">あしあと</div></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://hmznnknltmrjevbrlqnr.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_9Q9DHOTpC1zY7RAW2yz7Uw_VsPpnkwR';
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  let mode = 'review';
+  let currentCondition = null;
+  let currentSymptoms = [];
+  let currentSleep = null;
+  let currentUser = null;
+
+  const now = new Date();
+  document.querySelectorAll('#today-date').forEach(el => {
+    el.textContent = (now.getMonth()+1) + '/' + now.getDate();
+  });
+
+  // 起動時にセッション確認
+  (async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      currentUser = session.user;
+    }
+  })();
+
+  function goTo(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function getTimeStr() {
+    const d = new Date();
+    return d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0');
+  }
+
+  function startFlow(m) {
+    mode = m;
+    currentCondition = null;
+    currentSymptoms = [];
+    currentSleep = null;
+
+    if (!currentUser) {
+      goTo('screen-login');
+      return;
+    }
+
+    if (mode === 'review') {
+      document.getElementById('q1-step').textContent = '1 / 2';
+      document.getElementById('q1-text').textContent = '今日1日の体調は、\nいかがでしたか？';
+      document.getElementById('q1-text').style.whiteSpace = 'pre-line';
+    } else {
+      document.getElementById('q1-step').textContent = '記録';
+      document.getElementById('q1-text').textContent = '今、どんな感じですか？';
+      document.getElementById('q1-text').style.whiteSpace = 'normal';
+    }
+    goTo('screen-q1');
+  }
+
+  function selectCondition(val, btn) {
+    currentCondition = val;
+    btn.closest('.choice-group').querySelectorAll('.choice-btn').forEach(b => {
+      b.classList.remove('selected-good', 'selected-neutral', 'selected-bad');
+    });
+    btn.classList.add('selected-' + val);
+    setTimeout(() => {
+      if (val === 'neutral' || val === 'bad') {
+        document.getElementById('q1b-step').textContent = mode === 'review' ? '1 / 2' : '記録';
+        goTo('screen-q1b');
+      } else {
+        if (mode === 'review') goTo('screen-q2');
+        else saveAndComplete();
+      }
+    }, 250);
+  }
+
+  function toggleSymptom(btn) {
+    btn.classList.toggle('selected');
+    const tag = btn.textContent;
+    if (btn.classList.contains('selected')) {
+      currentSymptoms.push(tag);
+    } else {
+      currentSymptoms = currentSymptoms.filter(s => s !== tag);
+    }
+  }
+
+  function afterSymptom() {
+    if (mode === 'review') goTo('screen-q2');
+    else saveAndComplete();
+  }
+
+  function selectSleep(val, btn) {
+    currentSleep = val;
+    btn.closest('.choice-group').querySelectorAll('.choice-btn').forEach(b => {
+      b.classList.remove('selected-good', 'selected-neutral', 'selected-bad');
+    });
+    btn.classList.add('selected-' + val);
+    setTimeout(() => {
+      if (val === 'bad') goTo('screen-q2b');
+      else saveAndComplete();
+    }, 250);
+  }
+
+  function selectSleepDetail(val, btn) {
+    btn.closest('.choice-group').querySelectorAll('.choice-btn').forEach(b => {
+      b.classList.remove('selected-good', 'selected-neutral', 'selected-bad');
+    });
+    btn.classList.add('selected-neutral');
+    setTimeout(() => saveAndComplete(val), 250);
+  }
+
+  async function saveAndComplete(sleepDetail = null) {
+    if (!currentUser) { goTo('screen-login'); return; }
+
+    const { error } = await supabase.from('records').insert({
+      user_id: currentUser.id,
+      record_type: mode,
+      condition: currentCondition,
+      symptoms: currentSymptoms.length > 0 ? currentSymptoms : null,
+      sleep: currentSleep,
+      sleep_detail: sleepDetail,
+      recorded_at: new Date().toISOString()
+    });
+
+    if (error) {
+      console.error(error);
+    }
+
+    if (mode === 'review') {
+      await updateDaysCount();
+      goTo('screen-success');
+    } else {
+      document.getElementById('success-now-time').textContent = getTimeStr() + ' に記録しました。';
+      goTo('screen-success-now');
+    }
+  }
+
+  async function updateDaysCount() {
+    const { data } = await supabase
+      .from('records')
+      .select('recorded_at')
+      .eq('user_id', currentUser.id)
+      .eq('record_type', 'review');
+
+    if (data) {
+      const uniqueDays = new Set(data.map(r => r.recorded_at.slice(0, 10))).size;
+      const remaining = Math.max(0, 30 - uniqueDays);
+      const pct = Math.min(100, (uniqueDays / 30) * 100);
+      document.getElementById('days-remaining').textContent = remaining;
+      document.getElementById('days-fill-bar').style.width = pct + '%';
+      document.getElementById('days-text').textContent = uniqueDays + ' / 30日';
+    }
+  }
+
+  async function loadHistory() {
+    const list = document.getElementById('history-list');
+    list.innerHTML = '<div class="loading">読み込み中...</div>';
+
+    if (!currentUser) {
+      list.innerHTML = '<div class="empty-state">ログインすると記録が表示されます。</div>';
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from('records')
+      .select('*')
+      .eq('user_id', currentUser.id)
+      .order('recorded_at', { ascending: false })
+      .limit(30);
+
+    if (error || !data || data.length === 0) {
+      list.innerHTML = '<div class="section-title">あしあと</div><div class="empty-state">まだ記録がありません。<br>最初の記録をつけてみましょう。</div>';
+      return;
+    }
+
+    const conditionLabel = { good: '元気だった', neutral: '普通だった', bad: 'かなりしんどかった' };
+    const dotClass = { good: 'dot-good', neutral: 'dot-neutral', bad: 'dot-bad' };
+
+    let html = '<div class="section-title">あしあと</div>';
+    data.forEach(r => {
+      const d = new Date(r.recorded_at);
+      const dateStr = (d.getMonth()+1) + '/' + d.getDate();
+      const timeStr = d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0');
+      const dot = dotClass[r.condition] || 'dot-empty';
+      const label = conditionLabel[r.condition] || '';
+      const tags = r.symptoms ? r.symptoms.map(s => `<span class="history-tag">${s}</span>`).join('') : '';
+      const typeTag = r.record_type === 'now' ? '<span class="history-tag">追加記録</span>' : '';
+
+      html += `
+        <div class="history-item">
+          <div class="history-dot ${dot}"></div>
+          <div class="history-date">${dateStr}<span class="history-time">${timeStr}</span></div>
+          <div class="history-status">${label}</div>
+          <div class="history-tags">${typeTag}${tags}</div>
+        </div>`;
+    });
+
+    list.innerHTML = html;
+  }
+
+  // AUTH
+  async function handleLogin() {
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    document.getElementById('login-error').textContent = '';
+
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      document.getElementById('login-error').textContent = 'メールアドレスまたはパスワードが違います。';
+      return;
+    }
+    currentUser = data.user;
+    goTo('screen-onboarding');
+  }
+
+  async function handleSignup() {
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+    document.getElementById('signup-error').textContent = '';
+
+    const { error } = await supabase.auth.signUp({ email, password });
+    if (error) {
+      document.getElementById('signup-error').textContent = '登録できませんでした。もう一度お試しください。';
+      return;
+    }
+
+    // profilesテーブルに追加
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      currentUser = session.user;
+      await supabase.from('profiles').insert({ id: currentUser.id });
+      goTo('screen-onboarding');
+    } else {
+      goTo('screen-verify');
+    }
+  }
+</script>
+</body>
+</html>
